@@ -7,7 +7,7 @@ namespace Features.Match3.Scripts.Domain
     {
         public TileTypeID TypeId;
         public int UniqueId;
-        public bool IsEmpty => UniqueId == 0; // Assuming 0 is empty/null ID
+        public bool IsEmpty => UniqueId == 0;
 
         public static TileEntity Empty => new TileEntity { UniqueId = 0, TypeId = new TileTypeID(0) };
     }

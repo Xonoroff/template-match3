@@ -40,14 +40,6 @@ namespace Features.Match3.Scripts.Views
              );
         }
 
-        public void SetSelected(bool isSelected)
-        {
-            if (_renderer != null)
-            {
-                // Simple feedback
-                _renderer.transform.localScale = isSelected ? Vector3.one * 0.8f : Vector3.one;
-            }
-        }
 
         public void OnPointerDown(PointerEventData eventData)
         {

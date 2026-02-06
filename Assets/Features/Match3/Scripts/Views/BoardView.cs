@@ -68,31 +68,6 @@ namespace Features.Match3.Scripts.Views
             return new Vector3(x * _cellSize, y * _cellSize, 0);
         }
 
-        public void UpdateSelection(int x, int y)
-        {
-            // Reset old selection
-            // We need to find the tile at selectedX, selectedY. 
-            // _activeTiles is by ID. We don't have efficient (x,y) -> ID map here without search or maintenance.
-            // For now, let's iterate or maintain a secondary map.
-            // Or since selection is purely visual, maybe just highlight uniqueID if we knew it?
-            // "UpdateSelection(x, y)" comes from Presenter.
-            
-            // Simple visual approach:
-            _selectedX = x;
-            _selectedY = y;
-            // Iterate all active tiles to reset scale? Slow.
-            // But we don't have the map. 
-            // Let's rely on checking position distance or keep a map.
-            // For MVP:
-            foreach(var kvp in _activeTiles)
-            {
-                var t = kvp.Value;
-                var gridPos = LocalToGrid(t.transform.localPosition);
-                bool isTarget = (gridPos.x == x && gridPos.y == y);
-                t.SetSelected(isTarget);
-            }
-        }
-
         private Vector2Int LocalToGrid(Vector3 localPos)
         {
             return new Vector2Int(Mathf.RoundToInt(localPos.x / _cellSize), Mathf.RoundToInt(localPos.y / _cellSize));

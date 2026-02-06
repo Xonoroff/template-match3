@@ -2,7 +2,7 @@
 {
     public struct DropData
     {
-        public int FromIndex; // -1 if new spawn
+        public int FromIndex;
         public int ToIndex;
         public TileEntity Tile;
     }

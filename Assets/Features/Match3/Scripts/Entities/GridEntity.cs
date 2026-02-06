@@ -7,7 +7,7 @@ namespace Features.Match3.Scripts.Domain
     {
         public int Width;
         public int Height;
-        public TileEntity[] Tiles; // Flattened array for easier serialization/copying
+        public TileEntity[] Tiles; //TODO: DUNGEROUS!!! 
 
         public GridEntity(int width, int height)
         {

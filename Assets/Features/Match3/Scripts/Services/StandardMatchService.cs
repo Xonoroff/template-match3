@@ -39,7 +39,6 @@ namespace Features.Match3.Scripts.Domain
             {
                  matches.Add(new MatchPattern 
                  { 
-                     TypeId = startTile.TypeId, 
                      TileIndices = connectedIndices 
                  });
             }

@@ -31,7 +31,6 @@ namespace Features.Match3.Scripts.Services
         //TODO: Is can also send back invalid code. E.g. user is cheater.
         public UniTask<(LevelConfigEntity config, GridEntity state)> StartLevel(int levelId)
         {
-            //TODO: Fill state tiles
             var gridState = new GridEntity(_config.Width, _config.Height);
             var (refilledGrid, _) = _gridService.Refill(gridState, _cachedSeed, _config.AvailableTileTypes);
 

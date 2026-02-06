@@ -1,3 +1,4 @@
+using System;
 using Cysharp.Threading.Tasks;
 using Features.Match3.Scripts.Domain;
 using Features.Match3.Scripts.Managers;
@@ -5,7 +6,7 @@ using Features.Match3.Scripts.Views;
 
 namespace Features.Match3.Scripts.Presenters
 {
-    public class BoardPresenter
+    public class BoardPresenter : IDisposable
     {
         private readonly IMatch3Manager _manager;
         private readonly BoardView _view;
@@ -15,7 +16,6 @@ namespace Features.Match3.Scripts.Presenters
             _manager = manager;
             _view = view;
 
-            // View Events
             _view.OnTileClickedInternal += HandleViewTileClicked;
         }
 
@@ -88,15 +88,11 @@ namespace Features.Match3.Scripts.Presenters
                     foreach (var drop in gravity.Drops)
                     {
                         int width = step.ResultingGrid.Width;
-                        int fromX = drop.FromIndex % width;
-                        int fromY = drop.FromIndex / width;
                         int toX = drop.ToIndex % width;
                         int toY = drop.ToIndex / width;
                         
                         visualStep.Actions.Add(new MoveVisualAction
                         {
-                            FromX = fromX, 
-                            FromY = fromY,
                             ToX = toX,
                             ToY = toY,
                             Tile = drop.Tile
@@ -129,6 +125,11 @@ namespace Features.Match3.Scripts.Presenters
             }
 
             await _view.ExecuteVisuals(visualSeq);
+        }
+
+        public void Dispose()
+        {
+            _view.OnTileClickedInternal -= HandleViewTileClicked;
         }
     }
 }
