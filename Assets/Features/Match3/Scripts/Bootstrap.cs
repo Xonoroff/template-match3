@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Features.Match3.Scripts.Domain;
 using Features.Match3.Scripts.Managers;
 using Features.Match3.Scripts.Presenters;
@@ -8,7 +9,7 @@ using UnityEngine;
 
 namespace Features.Match3.Scripts
 {
-    public class Match3Context : MonoBehaviour
+    public class Bootstrap : MonoBehaviour
     {
         [SerializeField] private BoardView _view;
         [SerializeField] private int _width = 8;
@@ -44,24 +45,16 @@ namespace Features.Match3.Scripts
             IGravityService gravitySys = new StandardGravityService();
             IMatch3Evaluator evaluator = new StandardMatch3Evaluator(gridSys, matchSys, gravitySys);
 
-            ICommandLogService logService = new CommandLogService();
             ActivateTileHandler handler = new ActivateTileHandler(evaluator);
 
-            // 3. Initial State
-            // Create a random grid using the grid system refill logic?
-            // Or just a fresh grid then refill.
             var grid = new GridEntity(_width, _height);
             var (filledGrid, _) = gridSys.Refill(grid, _seed, types);
 
-            // 4. Manager
-            _manager = new Match3Manager(logService, handler, config, filledGrid);
-
-            // 5. Presenter
+            _manager = new Match3Manager(handler, config, filledGrid);
             _presenter = new BoardPresenter(_manager, _view);
-            _presenter.Initialize(); // Draws initial state
-
-            // 6. Start
-            _manager.StartGame();
+            
+            _presenter.InitializeAsync().Forget();
+            
         }
     }
 }

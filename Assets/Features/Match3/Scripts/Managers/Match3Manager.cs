@@ -25,7 +25,17 @@ namespace Features.Match3.Scripts.Managers
             Config = config;
             CurrentState = initialState;
         }
+
+        public UniTask<GridEntity> Initialize(int levelId)
+        {
+            //todo: Load level from client/backend
+            return UniTask.FromResult(CurrentState);
+        }
         
+        public UniTask<GridEntity> GetCurrentState()
+        {
+            return UniTask.FromResult(CurrentState);
+        }
 
         public async UniTask<GridEntity> HandleTap(int x, int y)
         {
