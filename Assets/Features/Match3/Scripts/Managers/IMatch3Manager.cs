@@ -6,7 +6,7 @@ namespace Features.Match3.Scripts.Managers
 {
     public interface IMatch3Manager
     {
-        UniTask<GridEntity> GetCurrentState();
+        UniTask<GridEntity> StartLevel(int levelId);
         
         UniTask<GridEntity> HandleTap(int x, int y);
     }

@@ -8,60 +8,53 @@ namespace Features.Match3.Scripts.Managers
 {
     public class Match3Manager : IMatch3Manager
     {
-        //TODO: Add authorative state
-        
         public GridEntity CurrentState { get; private set; }
         public LevelConfigEntity Config { get; private set; }
         
         // Dependencies
         private readonly ActivateTileHandler _activateTileHandler;
+        private readonly IMatch3API _api;
 
         public Match3Manager(
             ActivateTileHandler activateTileHandler,
-            LevelConfigEntity config,
-            GridEntity initialState)
+            IMatch3API api)
         {
             _activateTileHandler = activateTileHandler;
-            Config = config;
-            CurrentState = initialState;
+            _api = api;
         }
 
-        public UniTask<GridEntity> Initialize(int levelId)
+        public async UniTask<GridEntity> StartLevel(int levelId)
         {
-            //todo: Load level from client/backend
-            return UniTask.FromResult(CurrentState);
-        }
-        
-        public UniTask<GridEntity> GetCurrentState()
-        {
-            return UniTask.FromResult(CurrentState);
+            var (config, state) = await _api.StartLevel(levelId);
+            Config = config;
+            CurrentState = state;
+            return CurrentState;
         }
 
         public async UniTask<GridEntity> HandleTap(int x, int y)
         {
-            //TODO: Add validation
-            
-            var command = new ActivateTileCommand(x, y, CurrentState, Config);
-
-            TrackCommand(command);
-            
-            var result = await _activateTileHandler.Handle(command);
-
-            if (result.ResolvedSequence != null && result.ResolvedSequence.Steps.Count > 0)
+            if (CurrentState.Tiles == null)
             {
-                // Update Authoritative State to the final state of the sequence
-                var lastStep = result.ResolvedSequence.Steps[result.ResolvedSequence.Steps.Count - 1];
-                CurrentState = lastStep.ResultingGrid;
+                return CurrentState;
+            }
 
+            var command = new ActivateTileCommand(x, y, CurrentState, Config);
+            
+            var localResult = await _activateTileHandler.Handle(command);
+            
+            //TODO: Do not await for backend here and then - implement reactive subscription
+            var authoritativeState = await _api.SubmitMove(x, y);
+            
+            CurrentState = authoritativeState;
+            
+            if (localResult.ResolvedSequence != null && localResult.ResolvedSequence.Steps.Count > 0)
+            {
+                var lastStep = localResult.ResolvedSequence.Steps[localResult.ResolvedSequence.Steps.Count - 1];
+                CurrentState = lastStep.ResultingGrid;
             }
 
             return CurrentState;
         }
-
-        private void TrackCommand(ICommand command)
-        {
-            //TODO: Send send analytics
-            //TODO: Send to backend trackings and cheaters detection
-        }
+        
     }
 }

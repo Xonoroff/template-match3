@@ -1,8 +1,7 @@
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Features.Match3.Scripts.Domain;
 using Features.Match3.Scripts.Managers;
-using Features.Match3.Scripts.Views; // For VisualActions
+using Features.Match3.Scripts.Views;
 
 namespace Features.Match3.Scripts.Presenters
 {
@@ -11,7 +10,7 @@ namespace Features.Match3.Scripts.Presenters
         private readonly IMatch3Manager _manager;
         private readonly BoardView _view;
 
-        public BoardPresenter(Match3Manager manager, BoardView view)
+        public BoardPresenter(IMatch3Manager manager, BoardView view)
         {
             _manager = manager;
             _view = view;
@@ -21,15 +20,14 @@ namespace Features.Match3.Scripts.Presenters
         }
 
         //TODO: Add cancellation tokens
-        public async UniTask InitializeAsync()
+        public async UniTask StartLevelAsync(int levelId)
         {
-            // Initial Draw
-            var state = await _manager.GetCurrentState();
+            var state = await _manager.StartLevel(levelId);
             var viewEntity = new BoardViewEntity
             {
                 Width = state.Width,
                 Height = state.Height,
-                Tiles = state.Tiles // Copy referencing? Array is reference, but structs inside.
+                Tiles = state.Tiles
             };
             _view.Initialize(viewEntity);
         }
@@ -41,22 +39,10 @@ namespace Features.Match3.Scripts.Presenters
 
         private async UniTask HandleViewTileClickedAsync(int x, int y)
         {
+            //TODO: ResolveSequence
             var result = await _manager.HandleTap(x, y);
-            
-            //TOOD: caclulate visual actions
-            //TODO: Execute visual actions
         }
-
-        private void HandleSelectionChanged(int x, int y)
-        {
-            _view.UpdateSelection(x, y);
-        }
-
-        private void HandleStateChanged(GridEntity newState)
-        {
-            // Usually we only use Sequence, but this cleans up any sync issues
-            // _view.ForceRefresh(newState); 
-        }
+        
 
         private void HandleSequenceResolved(ResolveSequence sequence)
         {

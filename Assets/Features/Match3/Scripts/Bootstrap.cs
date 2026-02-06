@@ -21,7 +21,6 @@ namespace Features.Match3.Scripts
 
         private void Start()
         {
-            // 1. Config
             var types = new List<TileTypeID>
             {
                 new TileTypeID(1), // Red
@@ -31,30 +30,28 @@ namespace Features.Match3.Scripts
                 new TileTypeID(5)  // Purple
             };
             
-            var config = new LevelConfigEntity
-            {
-                Width = _width,
-                Height = _height,
-                Seed = _seed,
-                AvailableTileTypes = types
-            };
-
-            // 2. Services / Systems
             IGridService gridSys = new StandardGridService();
             IMatchService matchSys = new StandardMatchService();
             IGravityService gravitySys = new StandardGravityService();
             IMatch3Evaluator evaluator = new StandardMatch3Evaluator(gridSys, matchSys, gravitySys);
-
+            MockMatch3API match3API = new MockMatch3API(evaluator, gridSys);
             ActivateTileHandler handler = new ActivateTileHandler(evaluator);
-
-            var grid = new GridEntity(_width, _height);
-            var (filledGrid, _) = gridSys.Refill(grid, _seed, types);
-
-            _manager = new Match3Manager(handler, config, filledGrid);
+            
+            _manager = new Match3Manager(handler, match3API);
             _presenter = new BoardPresenter(_manager, _view);
-            
-            _presenter.InitializeAsync().Forget();
-            
+
+            var mockConfig = new LevelConfigEntity()
+            {
+                AvailableTileTypes = types, Width = _width, Height = _height,
+            };
+            match3API.MockConfig(mockConfig, _seed);
+
+            InitializeGame().Forget();
+        }
+
+        private async UniTaskVoid InitializeGame()
+        {
+            await _presenter.StartLevelAsync(-1);
         }
     }
 }
