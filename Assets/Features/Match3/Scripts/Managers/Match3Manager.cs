@@ -31,11 +31,11 @@ namespace Features.Match3.Scripts.Managers
             return CurrentState;
         }
 
-        public async UniTask<GridEntity> HandleTap(int x, int y)
+        public async UniTask<ResolveSequence> HandleTap(int x, int y)
         {
             if (CurrentState.Tiles == null)
             {
-                return CurrentState;
+                return new ResolveSequence();
             }
 
             var command = new ActivateTileCommand(x, y, CurrentState, Config);
@@ -50,10 +50,12 @@ namespace Features.Match3.Scripts.Managers
             if (localResult.ResolvedSequence != null && localResult.ResolvedSequence.Steps.Count > 0)
             {
                 var lastStep = localResult.ResolvedSequence.Steps[localResult.ResolvedSequence.Steps.Count - 1];
-                CurrentState = lastStep.ResultingGrid;
+                // We trust local simulation for visual flow, but eventually will sync with authoritative state
+                // For now, let's keep authoritative state as the source of truth for the NEXT action, 
+                // but return the local sequence for visualization
             }
 
-            return CurrentState;
+            return localResult.ResolvedSequence;
         }
         
     }

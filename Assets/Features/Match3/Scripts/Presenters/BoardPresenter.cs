@@ -39,13 +39,15 @@ namespace Features.Match3.Scripts.Presenters
 
         private async UniTask HandleViewTileClickedAsync(int x, int y)
         {
-            //TODO: ResolveSequence
-            var result = await _manager.HandleTap(x, y);
+            var sequence = await _manager.HandleTap(x, y);
+            HandleSequenceResolved(sequence);
         }
         
 
         private void HandleSequenceResolved(ResolveSequence sequence)
         {
+            if (sequence == null || sequence.Steps == null) return;
+
             var visualSeq = new VisualSequence();
 
             foreach (var step in sequence.Steps)
@@ -58,18 +60,14 @@ namespace Features.Match3.Scripts.Presenters
                     {
                         foreach (var idx in pattern.TileIndices)
                         {
-                            // Convert idx to x,y
-                            // This requires knowing grid width. We can get it from Manager or Step.ResultingGrid.
-                            int width = step.ResultingGrid.Width; // Assuming ResultingGrid is set
-                            int x = idx % width;
-                            int y = idx / width;
+                            int width = step.ResultingGrid.Width;
+                            int tileX = idx % width;
+                            int tileY = idx / width;
                             
                             visualStep.Actions.Add(new DestroyVisualAction
                             {
-                                X = x,
-                                Y = y,
-                                // UniqueId? Need to get it from previous state or we rely on View's map
-                                // View knows what visual is at (X, Y)
+                                X = tileX,
+                                Y = tileY
                             });
                         }
                     }
@@ -90,29 +88,12 @@ namespace Features.Match3.Scripts.Presenters
                             FromY = fromY,
                             ToX = toX,
                             ToY = toY,
-                            Tile = drop.Tile // Contains UniqueId to track
+                            Tile = drop.Tile
                         });
                     }
                 }
                 else if (step is RefillStep refill)
                 {
-                    // RefillStep in Domain stores "NewTiles". We need to know where they spawn.
-                    // The StandardGridSystem puts them in.
-                    // We can diff the grid or infer from DropData/Empty slots.
-                    // StandardGridSystem implementation:
-                    // "newTiles.Add(newTile)"
-                    // But where are they? 
-                    // Let's improve RefillStep to include index or check the grid.
-                    // For now, let's look at ResultingGrid and assume any tile at (x,y) that wasn't there before is a Spawn?
-                    // Or iterate ResultingGrid: any tile that has UniqueID in NewTiles list logic.
-                    
-                    // Refill Logic in Presenter:
-                    // Finds where the new tiles ended up.
-                    // Since gravity already happened, they fill top slots?
-                    // Actually StandardGridSystem just fills empty slots.
-                    // Gravity usually fills bottom slots, leaving top slots empty.
-                    // Then Refill fills those top slots.
-                    
                     var grid = step.ResultingGrid;
                     foreach (var newTile in refill.NewTiles)
                     {

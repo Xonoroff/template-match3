@@ -8,6 +8,6 @@ namespace Features.Match3.Scripts.Managers
     {
         UniTask<GridEntity> StartLevel(int levelId);
         
-        UniTask<GridEntity> HandleTap(int x, int y);
+        UniTask<ResolveSequence> HandleTap(int x, int y);
     }
 }

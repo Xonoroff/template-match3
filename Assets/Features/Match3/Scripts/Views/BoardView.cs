@@ -46,32 +46,26 @@ namespace Features.Match3.Scripts.Views
             var tile = Instantiate(_tilePrefab, _container);
             tile.transform.localPosition = GridToLocal(x, y);
             tile.Initialize(tileData);
+            tile.OnClicked += OnTileClickedHandler;
             _activeTiles[tileData.UniqueId] = tile;
             return tile;
+        }
+
+        private void OnTileClickedHandler(TileView tile)
+        {
+            var gridPos = LocalToGrid(tile.transform.localPosition);
+            
+            // Validate bounds
+            if (gridPos.x >= 0 && gridPos.x < _currentContext.Width && 
+                gridPos.y >= 0 && gridPos.y < _currentContext.Height)
+            {
+                OnTileClickedInternal?.Invoke(gridPos.x, gridPos.y);
+            }
         }
 
         private Vector3 GridToLocal(int x, int y)
         {
             return new Vector3(x * _cellSize, y * _cellSize, 0);
-        }
-
-        private void Update()
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                // Raycast
-                var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                // Convert to grid
-                // Assuming container is at (0,0) or strict local space
-                var localPos = _container.InverseTransformPoint(pos);
-                int x = Mathf.RoundToInt(localPos.x / _cellSize);
-                int y = Mathf.RoundToInt(localPos.y / _cellSize);
-                
-                if (x >= 0 && x < _currentContext.Width && y >= 0 && y < _currentContext.Height)
-                {
-                    OnTileClickedInternal?.Invoke(x, y);
-                }
-            }
         }
 
         public void UpdateSelection(int x, int y)
@@ -112,21 +106,15 @@ namespace Features.Match3.Scripts.Views
 
                 foreach (var action in step.Actions)
                 {
-                    if (action is SwapVisualAction swap)
-                    {
-                        var t1 = GetTileAt(swap.X1, swap.Y1);
-                        var t2 = GetTileAt(swap.X2, swap.Y2);
-                        if (t1 && t2)
-                        {
-                            tasks.Add(AnimateSwap(t1, t2));
-                        }
-                    }
-                    else if (action is DestroyVisualAction destroy)
+                    if (action is DestroyVisualAction destroy)
                     {
                         var t = GetTileAt(destroy.X, destroy.Y); // Or by UniqueID if provided
                         if (t)
                         {
                             _activeTiles.Remove(t.UniqueId);
+                            // Unsubscribe before destroying to be safe, though Destroy clears generic invokes, C# events persist if not cleared but the object is dead. 
+                            // Strong ref is Tile -> Board (Deletage). Board -> Tile (Ref). Tile is dead. GC handles it.
+                            t.OnClicked -= OnTileClickedHandler; 
                             tasks.Add(AnimateDestroy(t));
                         }
                     }

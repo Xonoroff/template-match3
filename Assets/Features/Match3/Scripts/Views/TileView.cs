@@ -1,11 +1,15 @@
+using System; // For Action
 using Features.Match3.Scripts.Domain;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Features.Match3.Scripts.Views
 {
-    public class TileView : MonoBehaviour
+    [RequireComponent(typeof(BoxCollider2D))]
+    public class TileView : MonoBehaviour, IPointerDownHandler
     {
         public int UniqueId { get; private set; }
+        public event Action<TileView> OnClicked;
         
         [SerializeField] private SpriteRenderer _renderer;
         // In a real app, inject a helper or use Serialized Dictionary for config
@@ -43,6 +47,11 @@ namespace Features.Match3.Scripts.Views
                 // Simple feedback
                 _renderer.transform.localScale = isSelected ? Vector3.one * 0.8f : Vector3.one;
             }
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            OnClicked?.Invoke(this);
         }
     }
 }

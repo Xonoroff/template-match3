@@ -18,12 +18,14 @@ namespace Features.Match3.Scripts.Services
         public MockMatch3API(IMatch3Evaluator evaluator, IGridService gridService)
         {
             _evaluator = evaluator;
+            _gridService = gridService;
         }
         
 
         public void MockConfig(LevelConfigEntity config, int seed)
         {
             _config = config;
+            _cachedSeed = seed;
         }
 
         //TODO: Is can also send back invalid code. E.g. user is cheater.
