@@ -98,7 +98,7 @@ namespace Features.Match3.Scripts.Views
             return new Vector2Int(Mathf.RoundToInt(localPos.x / _cellSize), Mathf.RoundToInt(localPos.y / _cellSize));
         }
 
-        public async void ExecuteVisuals(VisualSequence sequence) // async void for Unity Event/Message
+        public async UniTask ExecuteVisuals(VisualSequence sequence)
         {
             foreach (var step in sequence.Steps)
             {

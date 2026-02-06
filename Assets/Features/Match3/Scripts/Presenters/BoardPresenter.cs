@@ -32,19 +32,30 @@ namespace Features.Match3.Scripts.Presenters
             _view.Initialize(viewEntity);
         }
 
+        private bool _isInputProcessing;
+
         private void HandleViewTileClicked(int x, int y)
         {
+            if (_isInputProcessing) return;
             HandleViewTileClickedAsync(x,y).Forget();
         }
 
         private async UniTask HandleViewTileClickedAsync(int x, int y)
         {
-            var sequence = await _manager.HandleTap(x, y);
-            HandleSequenceResolved(sequence);
+            _isInputProcessing = true;
+            try
+            {
+                var sequence = await _manager.HandleTap(x, y);
+                await HandleSequenceResolved(sequence);
+            }
+            finally
+            {
+                _isInputProcessing = false;
+            }
         }
         
 
-        private void HandleSequenceResolved(ResolveSequence sequence)
+        private async UniTask HandleSequenceResolved(ResolveSequence sequence)
         {
             if (sequence == null || sequence.Steps == null) return;
 
@@ -117,7 +128,7 @@ namespace Features.Match3.Scripts.Presenters
                 visualSeq.Steps.Add(visualStep);
             }
 
-            _view.ExecuteVisuals(visualSeq);
+            await _view.ExecuteVisuals(visualSeq);
         }
     }
 }
