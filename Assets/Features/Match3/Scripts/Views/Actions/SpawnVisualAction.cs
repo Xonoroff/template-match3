@@ -5,6 +5,6 @@ namespace Features.Match3.Scripts.Views
     public class SpawnVisualAction : VisualAction
     {
         public int X, Y;
-        public TileEntity Tile;
+        public TileViewEntity Tile;
     }
 }

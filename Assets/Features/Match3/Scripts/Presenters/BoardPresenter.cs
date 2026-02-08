@@ -23,11 +23,23 @@ namespace Features.Match3.Scripts.Presenters
         public async UniTask StartLevelAsync(int levelId)
         {
             var state = await _manager.StartLevel(levelId);
+
+            // Map TileEntity to TileViewEntity
+            var viewTiles = new TileViewEntity[state.Tiles.Length];
+            for (int i = 0; i < state.Tiles.Length; i++)
+            {
+                viewTiles[i] = new TileViewEntity
+                {
+                    UniqueId = state.Tiles[i].UniqueId,
+                    TypeId = state.Tiles[i].TypeId
+                };
+            }
+
             var viewEntity = new BoardViewEntity
             {
                 Width = state.Width,
                 Height = state.Height,
-                Tiles = state.Tiles
+                Tiles = viewTiles
             };
             _view.Initialize(viewEntity);
         }
@@ -37,7 +49,7 @@ namespace Features.Match3.Scripts.Presenters
         private void HandleViewTileClicked(int x, int y)
         {
             if (_isInputProcessing) return;
-            HandleViewTileClickedAsync(x,y).Forget();
+            HandleViewTileClickedAsync(x, y).Forget();
         }
 
         private async UniTask HandleViewTileClickedAsync(int x, int y)
@@ -53,7 +65,7 @@ namespace Features.Match3.Scripts.Presenters
                 _isInputProcessing = false;
             }
         }
-        
+
 
         private async UniTask HandleSequenceResolved(ResolveSequence sequence)
         {
@@ -74,7 +86,7 @@ namespace Features.Match3.Scripts.Presenters
                             int width = step.ResultingGrid.Width;
                             int tileX = idx % width;
                             int tileY = idx / width;
-                            
+
                             visualStep.Actions.Add(new DestroyVisualAction
                             {
                                 X = tileX,
@@ -90,12 +102,16 @@ namespace Features.Match3.Scripts.Presenters
                         int width = step.ResultingGrid.Width;
                         int toX = drop.ToIndex % width;
                         int toY = drop.ToIndex / width;
-                        
+
                         visualStep.Actions.Add(new MoveVisualAction
                         {
                             ToX = toX,
                             ToY = toY,
-                            Tile = drop.Tile
+                            Tile = new TileViewEntity
+                            {
+                                UniqueId = drop.Tile.UniqueId,
+                                TypeId = drop.Tile.TypeId
+                            }
                         });
                     }
                 }
@@ -104,20 +120,24 @@ namespace Features.Match3.Scripts.Presenters
                     var grid = step.ResultingGrid;
                     foreach (var newTile in refill.NewTiles)
                     {
-                         // Find newTile in grid
-                         for(int i=0; i<grid.Tiles.Length; i++)
-                         {
-                             if (grid.Tiles[i].UniqueId == newTile.UniqueId)
-                             {
-                                 visualStep.Actions.Add(new SpawnVisualAction
-                                 {
-                                     X = i % grid.Width,
-                                     Y = i / grid.Width,
-                                     Tile = newTile
-                                 });
-                                 break;
-                             }
-                         }
+                        // Find newTile in grid
+                        for (int i = 0; i < grid.Tiles.Length; i++)
+                        {
+                            if (grid.Tiles[i].UniqueId == newTile.UniqueId)
+                            {
+                                visualStep.Actions.Add(new SpawnVisualAction
+                                {
+                                    X = i % grid.Width,
+                                    Y = i / grid.Width,
+                                    Tile = new TileViewEntity
+                                    {
+                                        UniqueId = newTile.UniqueId,
+                                        TypeId = newTile.TypeId
+                                    }
+                                });
+                                break;
+                            }
+                        }
                     }
                 }
 

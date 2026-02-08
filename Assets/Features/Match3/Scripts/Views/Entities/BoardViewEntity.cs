@@ -6,6 +6,6 @@ namespace Features.Match3.Scripts.Views
     {
         public int Width;
         public int Height;
-        public TileEntity[] Tiles;
+        public TileViewEntity[] Tiles;
     }
 }

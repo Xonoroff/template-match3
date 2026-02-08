@@ -11,11 +11,11 @@ namespace Features.Match3.Scripts.Views
         [SerializeField] private TileView _tilePrefab;
         [SerializeField] private Transform _container;
         [SerializeField] private float _cellSize = 1.0f;
-        
+
         // State
         private Dictionary<int, TileView> _activeTiles = new Dictionary<int, TileView>();
         private BoardViewEntity _currentContext;
-        private int _selectedX=-1, _selectedY=-1;
+        private int _selectedX = -1, _selectedY = -1;
 
         // Events
         public event Action<int, int> OnTileClickedInternal;
@@ -23,9 +23,9 @@ namespace Features.Match3.Scripts.Views
         public void Initialize(BoardViewEntity context)
         {
             _currentContext = context;
-            
+
             // Clear existing
-            foreach(Transform child in _container) Destroy(child.gameObject);
+            foreach (Transform child in _container) Destroy(child.gameObject);
             _activeTiles.Clear();
 
             // Spawn grid
@@ -41,7 +41,7 @@ namespace Features.Match3.Scripts.Views
             }
         }
 
-        private TileView SpawnTile(TileEntity tileData, int x, int y)
+        private TileView SpawnTile(TileViewEntity tileData, int x, int y)
         {
             var tile = Instantiate(_tilePrefab, _container);
             tile.transform.localPosition = GridToLocal(x, y);
@@ -54,9 +54,9 @@ namespace Features.Match3.Scripts.Views
         private void OnTileClickedHandler(TileView tile)
         {
             var gridPos = LocalToGrid(tile.transform.localPosition);
-            
+
             // Validate bounds
-            if (gridPos.x >= 0 && gridPos.x < _currentContext.Width && 
+            if (gridPos.x >= 0 && gridPos.x < _currentContext.Width &&
                 gridPos.y >= 0 && gridPos.y < _currentContext.Height)
             {
                 OnTileClickedInternal?.Invoke(gridPos.x, gridPos.y);
@@ -89,7 +89,7 @@ namespace Features.Match3.Scripts.Views
                             _activeTiles.Remove(t.UniqueId);
                             // Unsubscribe before destroying to be safe, though Destroy clears generic invokes, C# events persist if not cleared but the object is dead. 
                             // Strong ref is Tile -> Board (Deletage). Board -> Tile (Ref). Tile is dead. GC handles it.
-                            t.OnClicked -= OnTileClickedHandler; 
+                            t.OnClicked -= OnTileClickedHandler;
                             tasks.Add(AnimateDestroy(t));
                         }
                     }
@@ -97,8 +97,8 @@ namespace Features.Match3.Scripts.Views
                     {
                         if (_activeTiles.TryGetValue(move.Tile.UniqueId, out var tile))
                         {
-                             // Move
-                             tasks.Add(AnimateMove(tile, move.ToX, move.ToY));
+                            // Move
+                            tasks.Add(AnimateMove(tile, move.ToX, move.ToY));
                         }
                     }
                     else if (action is SpawnVisualAction spawn)
@@ -122,8 +122,8 @@ namespace Features.Match3.Scripts.Views
             // Ideally optimize this lookup
             foreach (var kvp in _activeTiles)
             {
-                 var gridPos = LocalToGrid(kvp.Value.transform.localPosition);
-                 if (gridPos.x == x && gridPos.y == y) return kvp.Value;
+                var gridPos = LocalToGrid(kvp.Value.transform.localPosition);
+                if (gridPos.x == x && gridPos.y == y) return kvp.Value;
             }
             return null;
         }
@@ -134,7 +134,7 @@ namespace Features.Match3.Scripts.Views
             var p2 = t2.transform.localPosition;
             float duration = 0.2f;
             float elapsed = 0;
-            
+
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
@@ -151,9 +151,9 @@ namespace Features.Match3.Scripts.Views
         {
             var start = t.transform.localPosition;
             var end = GridToLocal(x, y);
-             float duration = 0.2f;
+            float duration = 0.2f;
             float elapsed = 0;
-            
+
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
@@ -168,9 +168,9 @@ namespace Features.Match3.Scripts.Views
         {
             // Scale down
             float duration = 0.2f;
-             float elapsed = 0;
+            float elapsed = 0;
             var startScale = t.transform.localScale;
-            
+
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
@@ -178,7 +178,7 @@ namespace Features.Match3.Scripts.Views
                 t.transform.localScale = Vector3.Lerp(startScale, Vector3.zero, tVal);
                 await UniTask.Yield();
             }
-            
+
             Destroy(t.gameObject);
         }
     }

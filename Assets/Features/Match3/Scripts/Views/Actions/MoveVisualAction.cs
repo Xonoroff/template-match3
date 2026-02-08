@@ -5,6 +5,6 @@ namespace Features.Match3.Scripts.Views
     public class MoveVisualAction : VisualAction
     {
         public int ToX, ToY;
-        public TileEntity Tile;
+        public TileViewEntity Tile;
     }
 }
