@@ -25,7 +25,7 @@ namespace Features.Match3.Scripts.Domain
                         // Stick tile down
                         var tile = newGrid.GetTile(x, y);
                         int targetY = y - emptyCount;
-                        
+
                         newGrid.SetTile(x, targetY, tile);
                         newGrid.SetTile(x, y, TileEntity.Empty);
 
@@ -33,8 +33,8 @@ namespace Features.Match3.Scripts.Domain
                         drops.Add(new DropData
                         {
                             Tile = tile,
-                            FromIndex = y * newGrid.Width + x,
-                            ToIndex = targetY * newGrid.Width + x
+                            From = new TileCoordinate(x, y),
+                            To = new TileCoordinate(x, targetY)
                         });
                     }
                 }

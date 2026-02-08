@@ -2,8 +2,8 @@
 {
     public struct DropData
     {
-        public int FromIndex;
-        public int ToIndex;
+        public TileCoordinate From;
+        public TileCoordinate To;
         public TileEntity Tile;
     }
 }

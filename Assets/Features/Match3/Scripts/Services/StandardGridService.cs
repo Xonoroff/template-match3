@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Features.Match3.Scripts.Domain
 {
@@ -24,7 +24,11 @@ namespace Features.Match3.Scripts.Domain
                         
                         var newTile = new TileEntity { TypeId = type, UniqueId = id };
                         newGrid.SetTile(x, y, newTile);
-                        newTiles.Add(newTile);
+                        newTiles.Add(new RefillData 
+                        { 
+                            Coordinates = new TileCoordinate(x, y),
+                            Tile = newTile 
+                        });
                     }
                 }
             }

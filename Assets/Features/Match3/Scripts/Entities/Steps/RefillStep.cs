@@ -4,6 +4,6 @@ namespace Features.Match3.Scripts.Domain
 {
     public class RefillStep : GameStep
     {
-        public List<TileEntity> NewTiles;
+        public List<RefillData> NewTiles;
     }
 }

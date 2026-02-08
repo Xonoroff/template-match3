@@ -116,9 +116,8 @@ namespace Features.Match3.Scripts.Presenters
                 {
                     foreach (var drop in gravity.Drops)
                     {
-                        int width = step.ResultingGrid.Width;
-                        int toX = drop.ToIndex % width;
-                        int toY = drop.ToIndex / width;
+                        int toX = drop.To.X;
+                        int toY = drop.To.Y;
 
                         _tileSpriteMap.TryGetValue(drop.Tile.TypeId, out var sprite);
 
@@ -138,29 +137,21 @@ namespace Features.Match3.Scripts.Presenters
                 else if (step is RefillStep refill)
                 {
                     var grid = step.ResultingGrid;
-                    foreach (var newTile in refill.NewTiles)
+                    foreach (var newTileData in refill.NewTiles)
                     {
-                        // Find newTile in grid
-                        for (int i = 0; i < grid.Tiles.Length; i++)
-                        {
-                            if (grid.Tiles[i].UniqueId == newTile.UniqueId)
-                            {
-                                _tileSpriteMap.TryGetValue(newTile.TypeId, out var sprite);
+                        _tileSpriteMap.TryGetValue(newTileData.Tile.TypeId, out var sprite);
 
-                                visualStep.Actions.Add(new SpawnVisualAction
-                                {
-                                    X = i % grid.Width,
-                                    Y = i / grid.Width,
-                                    Tile = new TileViewEntity
-                                    {
-                                        UniqueId = newTile.UniqueId,
-                                        TypeId = newTile.TypeId,
-                                        Sprite = sprite
-                                    }
-                                });
-                                break;
+                        visualStep.Actions.Add(new SpawnVisualAction
+                        {
+                            X = newTileData.Coordinates.X,
+                            Y = newTileData.Coordinates.Y,
+                            Tile = new TileViewEntity
+                            {
+                                UniqueId = newTileData.Tile.UniqueId,
+                                TypeId = newTileData.Tile.TypeId,
+                                Sprite = sprite
                             }
-                        }
+                        });
                     }
                 }
 
