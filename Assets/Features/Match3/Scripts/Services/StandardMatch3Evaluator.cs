@@ -22,17 +22,17 @@ namespace Features.Match3.Scripts.Domain
             var currentGrid = startState.Clone();
 
             var matches = _matchService.GetConnectedTiles(currentGrid, x, y);
-            
+
             if (matches.Count > 0)
             {
-                int currentSeed = config.Seed + Environment.TickCount; 
+                int currentSeed = config.Seed + Environment.TickCount;
 
-                 sequence.Steps.Add(new MatchStep { ResultingGrid = currentGrid.Clone(), Matches = matches });
-                 RemoveTiles(currentGrid, matches);
+                sequence.Steps.Add(new MatchStep { ResultingGrid = currentGrid.Clone(), Matches = matches });
+                RemoveTiles(currentGrid, matches);
 
-                 ApplyGravityAndRefill(currentGrid, sequence, ref currentSeed, config);
+                ApplyGravityAndRefill(currentGrid, sequence, ref currentSeed, config);
             }
-            
+
             return sequence;
         }
 
@@ -40,11 +40,9 @@ namespace Features.Match3.Scripts.Domain
         {
             foreach (var match in matches)
             {
-                foreach (var idx in match.TileIndices)
+                foreach (var coord in match.TileCoordinates)
                 {
-                    int x = idx % grid.Width;
-                    int y = idx / grid.Width;
-                    grid.SetTile(x, y, TileEntity.Empty);
+                    grid.SetTile(coord.X, coord.Y, TileEntity.Empty);
                 }
             }
         }
@@ -52,7 +50,7 @@ namespace Features.Match3.Scripts.Domain
         private void ApplyGravityAndRefill(GridEntity grid, ResolveSequence sequence, ref int seed, LevelConfigEntity config)
         {
             var (gridAfterGravity, gravityStep) = _gravityService.ApplyGravity(grid);
-            
+
             sequence.Steps.Add(gravityStep);
 
             var (gridAfterRefill, refillStep) = _gridService.Refill(gridAfterGravity, seed++, config.AvailableTileTypes);

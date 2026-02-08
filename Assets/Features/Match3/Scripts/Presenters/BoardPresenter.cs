@@ -102,16 +102,12 @@ namespace Features.Match3.Scripts.Presenters
                 {
                     foreach (var pattern in match.Matches)
                     {
-                        foreach (var idx in pattern.TileIndices)
+                        foreach (var coord in pattern.TileCoordinates)
                         {
-                            int width = step.ResultingGrid.Width;
-                            int tileX = idx % width;
-                            int tileY = idx / width;
-
                             visualStep.Actions.Add(new DestroyVisualAction
                             {
-                                X = tileX,
-                                Y = tileY
+                                X = coord.X,
+                                Y = coord.Y
                             });
                         }
                     }

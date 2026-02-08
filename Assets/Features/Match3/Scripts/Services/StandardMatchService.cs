@@ -7,7 +7,7 @@ namespace Features.Match3.Scripts.Domain
         public List<MatchPattern> GetConnectedTiles(GridEntity grid, int startX, int startY)
         {
             var matches = new List<MatchPattern>();
-            
+
             var state = grid; // In this architecture grid is stateless snapshot
             var startTile = state.GetTile(startX, startY);
 
@@ -19,7 +19,7 @@ namespace Features.Match3.Scripts.Domain
             var visited = new HashSet<int>();
             var connectedIndices = new List<int>();
             var queue = new Queue<(int x, int y)>();
-            
+
             queue.Enqueue((startX, startY));
             visited.Add(startY * state.Width + startX);
 
@@ -37,10 +37,16 @@ namespace Features.Match3.Scripts.Domain
 
             if (connectedIndices.Count >= 2) // Typically Match3 requires 3, but Blast might be 2+. Let's assume 2+ for tap.
             {
-                 matches.Add(new MatchPattern 
-                 { 
-                     TileIndices = connectedIndices 
-                 });
+                var matchCoordinates = new List<TileCoordinate>();
+                foreach (var index in connectedIndices)
+                {
+                    matchCoordinates.Add(new TileCoordinate(index % state.Width, index / state.Width));
+                }
+
+                matches.Add(new MatchPattern
+                {
+                    TileCoordinates = matchCoordinates
+                });
             }
 
             return matches;

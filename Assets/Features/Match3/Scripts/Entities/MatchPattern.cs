@@ -4,6 +4,6 @@ namespace Features.Match3.Scripts.Domain
 {
     public struct MatchPattern
     {
-        public List<int> TileIndices;
+        public List<TileCoordinate> TileCoordinates;
     }
 }
