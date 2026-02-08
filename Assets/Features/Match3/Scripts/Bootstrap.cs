@@ -12,8 +12,9 @@ namespace Features.Match3.Scripts
     public class Bootstrap : MonoBehaviour
     {
         [SerializeField] private BoardView _view;
-        [SerializeField] private int _width = 8;
-        [SerializeField] private int _height = 8;
+        [SerializeField] private Match3ContentLoader _contentLoader; // Assign in Inspector
+        [SerializeField] private int _width = 4;
+        [SerializeField] private int _height = 4;
         [SerializeField] private int _seed = 42;
 
         private Match3Manager _manager;
@@ -23,26 +24,29 @@ namespace Features.Match3.Scripts
         {
             var types = new List<TileTypeID>
             {
-                new TileTypeID(1), // Red
-                new TileTypeID(2), // Green
-                new TileTypeID(3), // Blue
-                new TileTypeID(4), // Yellow
-                new TileTypeID(5)  // Purple
+                new TileTypeID(1),
+                new TileTypeID(2),
+                new TileTypeID(3),
+                new TileTypeID(4),
             };
-            
+
             IGridService gridSys = new StandardGridService();
             IMatchService matchSys = new StandardMatchService();
             IGravityService gravitySys = new StandardGravityService();
             IMatch3Evaluator evaluator = new StandardMatch3Evaluator(gridSys, matchSys, gravitySys);
             MockMatch3API match3API = new MockMatch3API(evaluator, gridSys);
             ActivateTileHandler handler = new ActivateTileHandler(evaluator);
-            
+
             _manager = new Match3Manager(handler, match3API);
-            _presenter = new BoardPresenter(_manager, _view);
+            _presenter = new BoardPresenter(_manager, _view, _contentLoader);
 
             var mockConfig = new LevelConfigEntity()
             {
-                AvailableTileTypes = types, Width = _width, Height = _height,
+                AvailableTileTypes = types,
+                Width = _width,
+                Height = _height,
+                AtlasAddress = "tiles_default",
+                SpritePrefix = "tile_"
             };
             match3API.MockConfig(mockConfig, _seed);
 

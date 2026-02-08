@@ -3,9 +3,11 @@
 namespace Features.Match3.Scripts.Domain
 {
     [Serializable]
-    public struct TileTypeID : IEquatable<TileTypeID>
+    public readonly struct TileTypeID : IEquatable<TileTypeID>
     {
-        public int Value;
+        public readonly int Value;
+
+        public static readonly TileTypeID None = new TileTypeID(0);
 
         public TileTypeID(int value)
         {

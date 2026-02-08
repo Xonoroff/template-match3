@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Features.Match3.Scripts.Domain;
 using Features.Match3.Scripts.Managers;
+using Features.Match3.Scripts.Services;
 using Features.Match3.Scripts.Views;
+using UnityEngine;
 
 namespace Features.Match3.Scripts.Presenters
 {
@@ -10,11 +13,14 @@ namespace Features.Match3.Scripts.Presenters
     {
         private readonly IMatch3Manager _manager;
         private readonly BoardView _view;
+        private readonly IMatch3ContentLoader _contentLoader;
+        private Dictionary<TileTypeID, Sprite> _tileSpriteMap;
 
-        public BoardPresenter(IMatch3Manager manager, BoardView view)
+        public BoardPresenter(IMatch3Manager manager, BoardView view, IMatch3ContentLoader contentLoader)
         {
             _manager = manager;
             _view = view;
+            _contentLoader = contentLoader;
 
             _view.OnTileClickedInternal += HandleViewTileClicked;
         }
@@ -22,16 +28,31 @@ namespace Features.Match3.Scripts.Presenters
         //TODO: Add cancellation tokens
         public async UniTask StartLevelAsync(int levelId)
         {
-            var state = await _manager.StartLevel(levelId);
+            var (config, state) = await _manager.StartLevel(levelId);
+            _contentLoader.Initialize(config);
+
+            _tileSpriteMap = new Dictionary<TileTypeID, Sprite>();
+            foreach (var type in config.AvailableTileTypes)
+            {
+                if (!_tileSpriteMap.ContainsKey(type))
+                {
+                    var sprite = await _contentLoader.LoadSpriteAsync(type);
+                    _tileSpriteMap[type] = sprite;
+                }
+            }
 
             // Map TileEntity to TileViewEntity
             var viewTiles = new TileViewEntity[state.Tiles.Length];
             for (int i = 0; i < state.Tiles.Length; i++)
             {
+                // Fallback to null if not found (or should we log error? Loader logs warnings)
+                _tileSpriteMap.TryGetValue(state.Tiles[i].TypeId, out var sprite);
+
                 viewTiles[i] = new TileViewEntity
                 {
                     UniqueId = state.Tiles[i].UniqueId,
-                    TypeId = state.Tiles[i].TypeId
+                    TypeId = state.Tiles[i].TypeId,
+                    Sprite = sprite
                 };
             }
 
@@ -103,6 +124,8 @@ namespace Features.Match3.Scripts.Presenters
                         int toX = drop.ToIndex % width;
                         int toY = drop.ToIndex / width;
 
+                        _tileSpriteMap.TryGetValue(drop.Tile.TypeId, out var sprite);
+
                         visualStep.Actions.Add(new MoveVisualAction
                         {
                             ToX = toX,
@@ -110,7 +133,8 @@ namespace Features.Match3.Scripts.Presenters
                             Tile = new TileViewEntity
                             {
                                 UniqueId = drop.Tile.UniqueId,
-                                TypeId = drop.Tile.TypeId
+                                TypeId = drop.Tile.TypeId,
+                                Sprite = sprite
                             }
                         });
                     }
@@ -125,6 +149,8 @@ namespace Features.Match3.Scripts.Presenters
                         {
                             if (grid.Tiles[i].UniqueId == newTile.UniqueId)
                             {
+                                _tileSpriteMap.TryGetValue(newTile.TypeId, out var sprite);
+
                                 visualStep.Actions.Add(new SpawnVisualAction
                                 {
                                     X = i % grid.Width,
@@ -132,7 +158,8 @@ namespace Features.Match3.Scripts.Presenters
                                     Tile = new TileViewEntity
                                     {
                                         UniqueId = newTile.UniqueId,
-                                        TypeId = newTile.TypeId
+                                        TypeId = newTile.TypeId,
+                                        Sprite = sprite
                                     }
                                 });
                                 break;

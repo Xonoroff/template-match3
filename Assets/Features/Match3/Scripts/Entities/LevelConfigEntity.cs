@@ -11,5 +11,7 @@ namespace Features.Match3.Scripts.Domain
         public int Height;
         public List<TileTypeID> AvailableTileTypes;
         public int Seed;
+        public string AtlasAddress;
+        public string SpritePrefix;
     }
 }

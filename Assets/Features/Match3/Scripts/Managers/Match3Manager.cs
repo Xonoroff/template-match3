@@ -10,7 +10,7 @@ namespace Features.Match3.Scripts.Managers
     {
         private GridEntity _cachedProvisionalState;
         private LevelConfigEntity _cachedConfig;
-        
+
         private readonly ActivateTileHandler _activateTileHandler;
         private readonly IMatch3API _api;
 
@@ -22,12 +22,12 @@ namespace Features.Match3.Scripts.Managers
             _api = api;
         }
 
-        public async UniTask<GridEntity> StartLevel(int levelId)
+        public async UniTask<(LevelConfigEntity config, GridEntity state)> StartLevel(int levelId)
         {
             var (config, state) = await _api.StartLevel(levelId);
             _cachedConfig = config;
             _cachedProvisionalState = state;
-            return _cachedProvisionalState;
+            return (_cachedConfig, _cachedProvisionalState);
         }
 
         public async UniTask<ResolveSequence> HandleTap(int x, int y)
@@ -38,14 +38,14 @@ namespace Features.Match3.Scripts.Managers
             }
 
             var command = new ActivateTileCommand(x, y, _cachedProvisionalState, _cachedConfig);
-            
+
             var localResult = await _activateTileHandler.Handle(command);
-            
+
             //TODO: Do not await for backend here and then - implement reactive subscription
             var authoritativeState = await _api.SubmitMove(x, y);
-            
+
             _cachedProvisionalState = authoritativeState;
-            
+
             if (localResult.ResolvedSequence != null && localResult.ResolvedSequence.Steps.Count > 0)
             {
                 var lastStep = localResult.ResolvedSequence.Steps[localResult.ResolvedSequence.Steps.Count - 1];
@@ -56,6 +56,6 @@ namespace Features.Match3.Scripts.Managers
 
             return localResult.ResolvedSequence;
         }
-        
+
     }
 }

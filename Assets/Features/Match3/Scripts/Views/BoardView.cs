@@ -44,6 +44,7 @@ namespace Features.Match3.Scripts.Views
         private TileView SpawnTile(TileViewEntity tileData, int x, int y)
         {
             var tile = Instantiate(_tilePrefab, _container);
+            tile.name = $"{tile.name}_{tileData.TypeId}";
             tile.transform.localPosition = GridToLocal(x, y);
             tile.Initialize(tileData);
             tile.OnClicked += OnTileClickedHandler;

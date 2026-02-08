@@ -17,27 +17,15 @@ namespace Features.Match3.Scripts.Views
         public void Initialize(TileViewEntity tileCommand)
         {
             UniqueId = tileCommand.UniqueId;
-            UpdateVisuals(tileCommand.TypeId);
+            UpdateVisuals(tileCommand); // Pass the whole entity to access sprite
         }
 
-        public void UpdateVisuals(TileTypeID typeId)
+        public void UpdateVisuals(TileViewEntity tileCommand)
         {
-            // Placeholder color logic until we have sprites
             if (_renderer != null)
             {
-                _renderer.color = GetColorForType(typeId);
+                _renderer.sprite = tileCommand.Sprite;
             }
-        }
-
-        private Color GetColorForType(TileTypeID type)
-        {
-            // Deterministic colors for debugging
-            int hash = type.Value * 12345;
-            return new Color(
-                ((hash >> 16) & 0xFF) / 255f,
-                ((hash >> 8) & 0xFF) / 255f,
-                (hash & 0xFF) / 255f
-            );
         }
 
 

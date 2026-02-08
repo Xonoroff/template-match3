@@ -6,8 +6,8 @@ namespace Features.Match3.Scripts.Managers
 {
     public interface IMatch3Manager
     {
-        UniTask<GridEntity> StartLevel(int levelId);
-        
+        UniTask<(LevelConfigEntity config, GridEntity state)> StartLevel(int levelId);
+
         UniTask<ResolveSequence> HandleTap(int x, int y);
     }
 }
