@@ -8,7 +8,7 @@ namespace Features.Match3.Scripts.Domain
         {
             var newGrid = grid.Clone();
             var rand = new System.Random(seed);
-            var newTiles = new List<TileEntity>();
+            var newTiles = new List<RefillData>();
 
             for (int y = 0; y < newGrid.Height; y++)
             {
