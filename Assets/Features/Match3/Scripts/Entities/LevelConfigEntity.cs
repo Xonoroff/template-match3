@@ -6,10 +6,9 @@ namespace Features.Match3.Scripts.Domain
     [Serializable]
     public struct LevelConfigEntity
     {
-        public int Id;
         public int Width;
         public int Height;
-        public List<TileTypeID> AvailableTileTypes;
+        public TileTypeIDEntity[] AvailableColors;
         public int Seed;
         public string AtlasAddress;
         public string SpritePrefix;

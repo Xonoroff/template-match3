@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
 
 namespace Features.Match3.Scripts.Services
 {

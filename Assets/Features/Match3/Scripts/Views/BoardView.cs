@@ -15,7 +15,7 @@ namespace Features.Match3.Scripts.Views
         // State
         private Dictionary<int, TileView> _activeTiles = new Dictionary<int, TileView>();
         private BoardViewEntity _currentContext;
-        private int _selectedX = -1, _selectedY = -1;
+
 
         // Events
         public event Action<int, int> OnTileClickedInternal;
@@ -25,7 +25,11 @@ namespace Features.Match3.Scripts.Views
             _currentContext = context;
 
             // Clear existing
-            foreach (Transform child in _container) Destroy(child.gameObject);
+            foreach (Transform child in _container)
+            {
+                Destroy(child.gameObject);
+            }
+
             _activeTiles.Clear();
 
             // Spawn grid

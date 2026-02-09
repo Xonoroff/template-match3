@@ -16,9 +16,9 @@ namespace Features.Match3.Scripts.Domain
             _gravityService = gravity;
         }
 
-        public ResolveSequence ResolveTap(GridEntity startState, int x, int y, LevelConfigEntity config)
+        public ResolveSequenceEntity ResolveTap(GridEntity startState, int x, int y, LevelConfigEntity config)
         {
-            var sequence = new ResolveSequence();
+            var sequence = new ResolveSequenceEntity();
             var currentGrid = startState.Clone();
 
             var matches = _matchService.GetConnectedTiles(currentGrid, x, y);
@@ -27,7 +27,7 @@ namespace Features.Match3.Scripts.Domain
             {
                 int currentSeed = config.Seed + Environment.TickCount;
 
-                sequence.Steps.Add(new MatchStep { ResultingGrid = currentGrid.Clone(), Matches = matches });
+                sequence.Steps.Add(new MatchStepEntity { ResultingGrid = currentGrid.Clone(), Matches = matches });
                 RemoveTiles(currentGrid, matches);
 
                 ApplyGravityAndRefill(currentGrid, sequence, ref currentSeed, config);
@@ -36,7 +36,7 @@ namespace Features.Match3.Scripts.Domain
             return sequence;
         }
 
-        private void RemoveTiles(GridEntity grid, List<MatchPattern> matches)
+        private void RemoveTiles(GridEntity grid, List<MatchPatternEntity> matches)
         {
             foreach (var match in matches)
             {
@@ -47,13 +47,13 @@ namespace Features.Match3.Scripts.Domain
             }
         }
 
-        private void ApplyGravityAndRefill(GridEntity grid, ResolveSequence sequence, ref int seed, LevelConfigEntity config)
+        private void ApplyGravityAndRefill(GridEntity grid, ResolveSequenceEntity sequence, ref int seed, LevelConfigEntity config)
         {
             var (gridAfterGravity, gravityStep) = _gravityService.ApplyGravity(grid);
 
             sequence.Steps.Add(gravityStep);
 
-            var (gridAfterRefill, refillStep) = _gridService.Refill(gridAfterGravity, seed++, config.AvailableTileTypes);
+            var (gridAfterRefill, refillStep) = _gridService.Refill(gridAfterGravity, seed++, config.AvailableColors);
             sequence.Steps.Add(refillStep);
         }
     }

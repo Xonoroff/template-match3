@@ -1,6 +1,6 @@
 ﻿namespace Features.Match3.Scripts.Domain
 {
-    public abstract class GameStep
+    public abstract class GameStepEntity
     {
         public GridEntity ResultingGrid;
     }

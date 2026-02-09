@@ -6,7 +6,7 @@ namespace Features.Match3.Scripts.Views
     public struct TileViewEntity
     {
         public int UniqueId;
-        public TileTypeID TypeId;
+        public TileTypeIDEntity TypeId;
         public Sprite Sprite;
         public bool IsEmpty => UniqueId == 0;
     }

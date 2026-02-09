@@ -4,9 +4,9 @@ namespace Features.Match3.Scripts.Domain
 {
     public class StandardMatchService : IMatchService
     {
-        public List<MatchPattern> GetConnectedTiles(GridEntity grid, int startX, int startY)
+        public List<MatchPatternEntity> GetConnectedTiles(GridEntity grid, int startX, int startY)
         {
-            var matches = new List<MatchPattern>();
+            var matches = new List<MatchPatternEntity>();
 
             var state = grid; // In this architecture grid is stateless snapshot
             var startTile = state.GetTile(startX, startY);
@@ -29,21 +29,21 @@ namespace Features.Match3.Scripts.Domain
                 connectedIndices.Add(cy * state.Width + cx);
 
                 // Check Neighbors
-                CheckNeighbor(cx + 1, cy, state, startTile.TypeId, visited, queue);
-                CheckNeighbor(cx - 1, cy, state, startTile.TypeId, visited, queue);
-                CheckNeighbor(cx, cy + 1, state, startTile.TypeId, visited, queue);
-                CheckNeighbor(cx, cy - 1, state, startTile.TypeId, visited, queue);
+                CheckNeighbor(cx + 1, cy, state, startTile.Type, visited, queue);
+                CheckNeighbor(cx - 1, cy, state, startTile.Type, visited, queue);
+                CheckNeighbor(cx, cy + 1, state, startTile.Type, visited, queue);
+                CheckNeighbor(cx, cy - 1, state, startTile.Type, visited, queue);
             }
 
-            if (connectedIndices.Count >= 2) // Typically Match3 requires 3, but Blast might be 2+. Let's assume 2+ for tap.
+            if (connectedIndices.Count >= 2)
             {
-                var matchCoordinates = new List<TileCoordinate>();
+                var matchCoordinates = new List<TileCoordinateEntity>();
                 foreach (var index in connectedIndices)
                 {
-                    matchCoordinates.Add(new TileCoordinate(index % state.Width, index / state.Width));
+                    matchCoordinates.Add(new TileCoordinateEntity(index % state.Width, index / state.Width));
                 }
 
-                matches.Add(new MatchPattern
+                matches.Add(new MatchPatternEntity
                 {
                     TileCoordinates = matchCoordinates
                 });
@@ -52,7 +52,7 @@ namespace Features.Match3.Scripts.Domain
             return matches;
         }
 
-        private void CheckNeighbor(int x, int y, GridEntity grid, TileTypeID targetType, HashSet<int> visited, Queue<(int x, int y)> queue)
+        private void CheckNeighbor(int x, int y, GridEntity grid, TileTypeIDEntity targetType, HashSet<int> visited, Queue<(int x, int y)> queue)
         {
             if (x < 0 || x >= grid.Width || y < 0 || y >= grid.Height) return;
 
@@ -60,7 +60,7 @@ namespace Features.Match3.Scripts.Domain
             if (visited.Contains(index)) return;
 
             var tile = grid.GetTile(x, y);
-            if (!tile.IsEmpty && tile.TypeId == targetType)
+            if (!tile.IsEmpty && tile.Type == targetType)
             {
                 visited.Add(index);
                 queue.Enqueue((x, y));

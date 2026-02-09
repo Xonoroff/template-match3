@@ -628,8 +628,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _view: {fileID: 454907262}
   _contentLoader: {fileID: 136688046}
-  _width: 8
-  _height: 8
+  _width: 4
+  _height: 4
   _seed: 42
 --- !u!4 &1356719871
 Transform:

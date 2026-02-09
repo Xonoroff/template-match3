@@ -3,9 +3,9 @@ using System;
 namespace Features.Match3.Scripts.Domain
 {
     [Serializable]
-    public struct RefillData
+    public struct TilePlacementEntity
     {
-        public TileCoordinate Coordinates;
+        public TileCoordinateEntity Coordinates;
         public TileEntity Tile;
     }
 }

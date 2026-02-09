@@ -12,12 +12,11 @@ namespace Features.Match3.Scripts.Views
         public event Action<TileView> OnClicked;
 
         [SerializeField] private SpriteRenderer _renderer;
-        // In a real app, inject a helper or use Serialized Dictionary for config
 
         public void Initialize(TileViewEntity tileCommand)
         {
             UniqueId = tileCommand.UniqueId;
-            UpdateVisuals(tileCommand); // Pass the whole entity to access sprite
+            UpdateVisuals(tileCommand);
         }
 
         public void UpdateVisuals(TileViewEntity tileCommand)

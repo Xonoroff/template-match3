@@ -20,7 +20,7 @@ namespace Features.Match3.Scripts.Services
             _config = config;
         }
 
-        public async UniTask<Sprite> LoadSpriteAsync(TileTypeID typeId)
+        public async UniTask<Sprite> LoadSpriteAsync(TileTypeIDEntity typeId)
         {
             if (_spriteCache.TryGetValue(typeId.Value, out var cachedSprite))
             {
@@ -63,7 +63,13 @@ namespace Features.Match3.Scripts.Services
             return sprite;
         }
 
-        public void Unload()
+
+        private void OnDestroy()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
         {
             _spriteCache.Clear();
             if (_cachedAtlas != null)
@@ -71,11 +77,6 @@ namespace Features.Match3.Scripts.Services
                 Addressables.Release(_atlasHandle);
                 _cachedAtlas = null;
             }
-        }
-
-        private void OnDestroy()
-        {
-            Unload();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using Features.Match3.Scripts.Domain;
 
 namespace Features.Match3.Scripts.Managers
@@ -8,6 +7,6 @@ namespace Features.Match3.Scripts.Managers
     {
         UniTask<(LevelConfigEntity config, GridEntity state)> StartLevel(int levelId);
 
-        UniTask<ResolveSequence> HandleTap(int x, int y);
+        UniTask<ResolveSequenceEntity> HandleTap(int x, int y);
     }
 }

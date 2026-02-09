@@ -4,6 +4,6 @@ namespace Features.Match3.Scripts.Services
 {
     public struct HandlerResult
     {
-        public ResolveSequence ResolvedSequence;
+        public ResolveSequenceEntity ResolvedSequence;
     }
 }

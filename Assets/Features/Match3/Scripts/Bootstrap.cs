@@ -22,12 +22,12 @@ namespace Features.Match3.Scripts
 
         private void Start()
         {
-            var types = new List<TileTypeID>
+            var types = new List<TileTypeIDEntity>
             {
-                new TileTypeID(1),
-                new TileTypeID(2),
-                new TileTypeID(3),
-                new TileTypeID(4),
+                new TileTypeIDEntity(1),
+                new TileTypeIDEntity(2),
+                new TileTypeIDEntity(3),
+                new TileTypeIDEntity(4),
             };
 
             IGridService gridSys = new StandardGridService();
@@ -38,11 +38,11 @@ namespace Features.Match3.Scripts
             ActivateTileHandler handler = new ActivateTileHandler(evaluator);
 
             _manager = new Match3Manager(handler, match3API);
-            _presenter = new BoardPresenter(_manager, _view, _contentLoader);
+            _presenter = new BoardPresenter(_manager, _view, _contentLoader, Debug.unityLogger);
 
             var mockConfig = new LevelConfigEntity()
             {
-                AvailableTileTypes = types,
+                AvailableColors = types.ToArray(),
                 Width = _width,
                 Height = _height,
                 AtlasAddress = "tiles_default",

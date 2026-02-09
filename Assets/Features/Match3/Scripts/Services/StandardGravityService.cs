@@ -4,10 +4,10 @@ namespace Features.Match3.Scripts.Domain
 {
     public class StandardGravityService : IGravityService
     {
-        public (GridEntity, GravityStep) ApplyGravity(GridEntity grid)
+        public (GridEntity, GravityStepEntity) ApplyGravity(GridEntity grid)
         {
             var newGrid = grid.Clone();
-            var drops = new List<DropData>();
+            var drops = new List<TilePlacementEntity>();
 
             // For each column
             for (int x = 0; x < newGrid.Width; x++)
@@ -30,17 +30,16 @@ namespace Features.Match3.Scripts.Domain
                         newGrid.SetTile(x, y, TileEntity.Empty);
 
                         // Record drop
-                        drops.Add(new DropData
+                        drops.Add(new TilePlacementEntity
                         {
                             Tile = tile,
-                            From = new TileCoordinate(x, y),
-                            To = new TileCoordinate(x, targetY)
+                            Coordinates = new TileCoordinateEntity(x, targetY)
                         });
                     }
                 }
             }
 
-            var step = new GravityStep { ResultingGrid = newGrid, Drops = drops };
+            var step = new GravityStepEntity { ResultingGrid = newGrid, Items = drops };
             return (newGrid, step);
         }
     }
