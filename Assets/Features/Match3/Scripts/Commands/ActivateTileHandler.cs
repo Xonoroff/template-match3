@@ -16,7 +16,7 @@ namespace Features.Match3.Scripts.Services
         public UniTask<HandlerResult> Handle(ActivateTileCommand command)
         {
             
-            var evaluationResult =  _evaluator.ResolveTap(command.CurrentState, command.X, command.Y, command.Config);
+            var evaluationResult =  _evaluator.ResolveTap(command.CurrentState, command.Coordinate.X, command.Coordinate.Y, command.Config);
             var result = new HandlerResult()
             {
                 ResolvedSequence = evaluationResult,

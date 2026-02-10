@@ -23,13 +23,16 @@ namespace Features.Match3.Scripts.Domain
                         var tile = newGrid.GetTile(x, y);
                         int targetY = y - emptyCount;
 
-                        newGrid.SetTile(x, targetY, tile);
-                        newGrid.SetTile(x, y, TileEntity.Empty);
+                        // Ensure the tile we move knows its new coordinate
+                        var movedTile = tile;
+                        movedTile.Coordinate = new TileCoordinateEntity(x, targetY);
+
+                        newGrid.SetTile(x, targetY, movedTile);
+                        newGrid.SetTile(x, y, TileEntity.Empty(new TileCoordinateEntity(x, y)));
 
                         drops.Add(new TilePlacementEntity
                         {
-                            Tile = tile,
-                            Coordinates = new TileCoordinateEntity(x, targetY)
+                            Tile = movedTile
                         });
                     }
                 }

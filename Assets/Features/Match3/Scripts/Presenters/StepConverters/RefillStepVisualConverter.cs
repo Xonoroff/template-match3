@@ -13,7 +13,7 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
         {
             _spriteMap = spriteMap;
         }
-        
+
         public bool CanConvert(GameStepEntity step)
         {
             return step is RefillStepEntity;
@@ -30,13 +30,14 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
 
                 visualStep.Actions.Add(new SpawnVisualAction
                 {
-                    X = newTileData.Coordinates.X,
-                    Y = newTileData.Coordinates.Y,
+                    X = newTileData.Tile.Coordinate.X,
+                    Y = newTileData.Tile.Coordinate.Y,
                     Tile = new TileViewEntity
                     {
                         UniqueId = newTileData.Tile.UniqueId,
                         TypeId = newTileData.Tile.Type,
-                        Sprite = sprite
+                        Sprite = sprite,
+                        Coordinate = newTileData.Tile.Coordinate
                     }
                 });
             }

@@ -19,8 +19,8 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
 
             foreach (var drop in gravityStep.Items)
             {
-                int toX = drop.Coordinates.X;
-                int toY = drop.Coordinates.Y;
+                int toX = drop.Tile.Coordinate.X;
+                int toY = drop.Tile.Coordinate.Y;
 
                 visualStep.Actions.Add(new MoveVisualAction
                 {
@@ -29,7 +29,8 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
                     Tile = new TileViewEntity
                     {
                         UniqueId = drop.Tile.UniqueId,
-                        TypeId = drop.Tile.Type
+                        TypeId = drop.Tile.Type,
+                        Coordinate = drop.Tile.Coordinate
                     }
                 });
             }

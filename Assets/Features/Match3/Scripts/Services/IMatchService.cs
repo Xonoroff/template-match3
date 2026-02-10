@@ -4,6 +4,6 @@ namespace Features.Match3.Scripts.Domain
 {
     public interface IMatchService
     {
-        List<MatchPatternEntity> GetConnectedTiles(GridEntity grid, int startX, int startY);
+        List<MatchPatternEntity> GetConnectedTiles(GridEntity grid, int startX, int startY, int minDistance = 2);
     }
 }

@@ -44,11 +44,11 @@ namespace Features.Match3.Scripts.Views
                 SpawnTile(tileData, x, y);
             }
         }
-
+        
         private TileView SpawnTile(TileViewEntity tileData, int x, int y)
         {
+            //todo:pool
             var tile = Instantiate(_tilePrefab, _container);
-            tile.name = $"{tile.name}_{tileData.TypeId}";
             tile.transform.localPosition = GridToLocal(x, y);
             tile.Initialize(tileData);
             tile.OnClicked += OnTileClickedHandler;
@@ -125,32 +125,12 @@ namespace Features.Match3.Scripts.Views
 
         private TileView GetTileAt(int x, int y)
         {
-            // Ideally optimize this lookup
             foreach (var kvp in _activeTiles)
             {
                 var gridPos = LocalToGrid(kvp.Value.transform.localPosition);
                 if (gridPos.x == x && gridPos.y == y) return kvp.Value;
             }
             return null;
-        }
-
-        private async UniTask AnimateSwap(TileView t1, TileView t2)
-        {
-            var p1 = t1.transform.localPosition;
-            var p2 = t2.transform.localPosition;
-            float duration = 0.2f;
-            float elapsed = 0;
-
-            while (elapsed < duration)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / duration;
-                t1.transform.localPosition = Vector3.Lerp(p1, p2, t);
-                t2.transform.localPosition = Vector3.Lerp(p2, p1, t);
-                await UniTask.Yield();
-            }
-            t1.transform.localPosition = p2;
-            t2.transform.localPosition = p1;
         }
 
         private async UniTask AnimateMove(TileView t, int x, int y)

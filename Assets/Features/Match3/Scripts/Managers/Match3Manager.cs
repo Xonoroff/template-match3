@@ -39,7 +39,8 @@ namespace Features.Match3.Scripts.Managers
                 return new ResolveSequenceEntity();
             }
 
-            var command = new ActivateTileCommand(x, y, _cachedProvisionalState, _cachedConfig);
+            var coordinates = new TileCoordinateEntity(x, y);
+            var command = new ActivateTileCommand(coordinates, _cachedProvisionalState, _cachedConfig);
 
             var localResult = await _activateTileHandler.Handle(command);
 

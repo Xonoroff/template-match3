@@ -8,6 +8,7 @@ namespace Features.Match3.Scripts.Views
         public int UniqueId;
         public TileTypeIDEntity TypeId;
         public Sprite Sprite;
+        public TileCoordinateEntity Coordinate;
         public bool IsEmpty => UniqueId == 0;
     }
 }

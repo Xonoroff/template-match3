@@ -28,7 +28,7 @@ namespace Features.Match3.Scripts.Presenters
             _view = view;
             _contentLoader = contentLoader;
             _logger = logger;
-            
+
             _view.OnTileClickedInternal += HandleViewTileClicked;
         }
 
@@ -38,6 +38,7 @@ namespace Features.Match3.Scripts.Presenters
             if (ct.IsCancellationRequested)
             {
                 _logger.LogWarning("[Match3Module]", $"Cancellation requested while starting level {levelId}");
+                Dispose();
                 return;
             }
 
@@ -55,6 +56,12 @@ namespace Features.Match3.Scripts.Presenters
             }
 
             var loadedSprites = await UniTask.WhenAll(loadTasks);
+            if (ct.CanBeCanceled)
+            {
+                _logger.LogWarning("[Match3Module]", $"Cancellation requested while starting level {levelId}");
+                Dispose();
+                return;
+            }
 
             for (int i = 0; i < loadedSprites.Length; i++)
             {
@@ -70,7 +77,8 @@ namespace Features.Match3.Scripts.Presenters
                 {
                     UniqueId = state.Tiles[i].UniqueId,
                     TypeId = state.Tiles[i].Type,
-                    Sprite = sprite
+                    Sprite = sprite,
+                    Coordinate = state.Tiles[i].Coordinate
                 };
             }
 

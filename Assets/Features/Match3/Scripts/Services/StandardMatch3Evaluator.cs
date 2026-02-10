@@ -19,18 +19,18 @@ namespace Features.Match3.Scripts.Domain
         public ResolveSequenceEntity ResolveTap(GridEntity startState, int x, int y, LevelConfigEntity config)
         {
             var sequence = new ResolveSequenceEntity();
-            var currentGrid = startState.Clone();
+            var clonedGrid = startState.Clone();
 
-            var matches = _matchService.GetConnectedTiles(currentGrid, x, y);
+            var matches = _matchService.GetConnectedTiles(clonedGrid, x, y);
 
             if (matches.Count > 0)
             {
                 int currentSeed = config.Seed + Environment.TickCount;
 
-                sequence.Steps.Add(new MatchStepEntity { ResultingGrid = currentGrid.Clone(), Matches = matches });
-                RemoveTiles(currentGrid, matches);
+                sequence.Steps.Add(new MatchStepEntity { ResultingGrid = clonedGrid, Matches = matches });
+                RemoveTiles(clonedGrid, matches);
 
-                ApplyGravityAndRefill(currentGrid, sequence, ref currentSeed, config);
+                ApplyGravityAndRefill(clonedGrid, sequence, ref currentSeed, config);
             }
 
             return sequence;
@@ -42,7 +42,7 @@ namespace Features.Match3.Scripts.Domain
             {
                 foreach (var coord in match.TileCoordinates)
                 {
-                    grid.SetTile(coord.X, coord.Y, TileEntity.Empty);
+                    grid.SetTile(coord.X, coord.Y, TileEntity.Empty(coord));
                 }
             }
         }

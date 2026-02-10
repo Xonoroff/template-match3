@@ -4,67 +4,44 @@ namespace Features.Match3.Scripts.Domain
 {
     public class StandardMatchService : IMatchService
     {
-        public List<MatchPatternEntity> GetConnectedTiles(GridEntity grid, int startX, int startY)
+        public List<MatchPatternEntity> GetConnectedTiles(GridEntity grid, int startX, int startY, int minDistance = 2)
         {
-            var matches = new List<MatchPatternEntity>();
-
-            var state = grid.Clone();
-            var startTile = state.GetTile(startX, startY);
-
+            var startTile = grid.GetTile(startX, startY);
             if (startTile.IsEmpty)
             {
-                return matches;
+                return new List<MatchPatternEntity>();
             }
 
-            var visited = new HashSet<int>();
-            var connectedIndices = new List<int>();
-            var queue = new Queue<(int x, int y)>();
+            var connectedCoordinates = new HashSet<TileCoordinateEntity>();
+            FindConnectedTiles(grid, startX, startY, startTile.Type, connectedCoordinates);
 
-            queue.Enqueue((startX, startY));
-            visited.Add(startY * state.Width + startX);
-
-            while (queue.Count > 0)
+            if (connectedCoordinates.Count >= minDistance)
             {
-                var (cx, cy) = queue.Dequeue();
-                connectedIndices.Add(cy * state.Width + cx);
-
-                // Check Neighbors
-                CheckNeighbor(cx + 1, cy, state, startTile.Type, visited, queue);
-                CheckNeighbor(cx - 1, cy, state, startTile.Type, visited, queue);
-                CheckNeighbor(cx, cy + 1, state, startTile.Type, visited, queue);
-                CheckNeighbor(cx, cy - 1, state, startTile.Type, visited, queue);
+                return new List<MatchPatternEntity>
+                {
+                    new MatchPatternEntity { TileCoordinates = new List<TileCoordinateEntity>(connectedCoordinates) }
+                };
             }
 
-            if (connectedIndices.Count >= 2)
-            {
-                var matchCoordinates = new List<TileCoordinateEntity>();
-                foreach (var index in connectedIndices)
-                {
-                    matchCoordinates.Add(new TileCoordinateEntity(index % state.Width, index / state.Width));
-                }
-
-                matches.Add(new MatchPatternEntity
-                {
-                    TileCoordinates = matchCoordinates
-                });
-            }
-
-            return matches;
+            return new List<MatchPatternEntity>();
         }
 
-        private void CheckNeighbor(int x, int y, GridEntity grid, TileTypeIDEntity targetType, HashSet<int> visited, Queue<(int x, int y)> queue)
+        private void FindConnectedTiles(GridEntity grid, int x, int y, TileTypeIDEntity targetType, HashSet<TileCoordinateEntity> visited)
         {
             if (x < 0 || x >= grid.Width || y < 0 || y >= grid.Height) return;
 
-            int index = y * grid.Width + x;
-            if (visited.Contains(index)) return;
+            var coordinate = new TileCoordinateEntity(x, y);
+            if (visited.Contains(coordinate)) return;
 
             var tile = grid.GetTile(x, y);
-            if (!tile.IsEmpty && tile.Type == targetType)
-            {
-                visited.Add(index);
-                queue.Enqueue((x, y));
-            }
+            if (tile.IsEmpty || tile.Type != targetType) return;
+
+            visited.Add(coordinate);
+
+            FindConnectedTiles(grid, x + 1, y, targetType, visited);
+            FindConnectedTiles(grid, x - 1, y, targetType, visited);
+            FindConnectedTiles(grid, x, y + 1, targetType, visited);
+            FindConnectedTiles(grid, x, y - 1, targetType, visited);
         }
     }
 }
