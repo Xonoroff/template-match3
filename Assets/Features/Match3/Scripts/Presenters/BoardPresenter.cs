@@ -18,7 +18,6 @@ namespace Features.Match3.Scripts.Presenters
         private readonly IMatch3Manager _manager;
         private readonly BoardView _view;
         private readonly IMatch3ContentLoader _contentLoader;
-        private readonly StepVisualConverterRegistry _converterRegistry;
         private Dictionary<TileTypeIDEntity, Sprite> _tileSpriteMap;
 
         private bool _isInputProcessing;
@@ -29,9 +28,7 @@ namespace Features.Match3.Scripts.Presenters
             _view = view;
             _contentLoader = contentLoader;
             _logger = logger;
-
-            _converterRegistry = new StepVisualConverterRegistry();
-
+            
             _view.OnTileClickedInternal += HandleViewTileClicked;
         }
 
@@ -113,11 +110,12 @@ namespace Features.Match3.Scripts.Presenters
             if (sequence == null || sequence.Steps == null) return;
 
             var visualSeq = new VisualSequence();
+            var converterRegistry = new StepVisualConverterRegistry(_tileSpriteMap);
 
             foreach (var step in sequence.Steps)
             {
-                var converter = _converterRegistry.GetConverter(step);
-                var visualStep = converter.Convert(step, _tileSpriteMap);
+                var converter = converterRegistry.GetConverter(step);
+                var visualStep = converter.Convert(step);
                 visualSeq.Steps.Add(visualStep);
             }
 

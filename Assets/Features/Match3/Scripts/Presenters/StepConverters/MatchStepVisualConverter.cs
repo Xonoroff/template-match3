@@ -1,18 +1,17 @@
-using System.Collections.Generic;
 using Features.Match3.Scripts.Domain;
 using Features.Match3.Scripts.Views;
-using UnityEngine;
 
 namespace Features.Match3.Scripts.Presenters.StepConverters
 {
     public class MatchStepVisualConverter : IStepVisualConverter
     {
+
         public bool CanConvert(GameStepEntity step)
         {
             return step is MatchStepEntity;
         }
 
-        public VisualStep Convert(GameStepEntity step, IReadOnlyDictionary<TileTypeIDEntity, Sprite> spriteMap)
+        public VisualStep Convert(GameStepEntity step)
         {
             var matchStep = (MatchStepEntity)step;
             var visualStep = new VisualStep();

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Features.Match3.Scripts.Domain;
+using UnityEngine;
 
 namespace Features.Match3.Scripts.Presenters.StepConverters
 {
@@ -9,13 +10,13 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
     {
         private readonly List<IStepVisualConverter> _converters;
 
-        public StepVisualConverterRegistry()
+        public StepVisualConverterRegistry(IReadOnlyDictionary<TileTypeIDEntity, Sprite> spriteMap)
         {
             _converters = new List<IStepVisualConverter>
             {
                 new MatchStepVisualConverter(),
                 new GravityStepVisualConverter(),
-                new RefillStepVisualConverter()
+                new RefillStepVisualConverter(spriteMap)
             };
         }
 

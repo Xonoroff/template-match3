@@ -8,6 +8,6 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
     public interface IStepVisualConverter
     {
         bool CanConvert(GameStepEntity step);
-        VisualStep Convert(GameStepEntity step, IReadOnlyDictionary<TileTypeIDEntity, Sprite> spriteMap);
+        VisualStep Convert(GameStepEntity step);
     }
 }

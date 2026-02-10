@@ -7,19 +7,26 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
 {
     public class RefillStepVisualConverter : IStepVisualConverter
     {
+        private IReadOnlyDictionary<TileTypeIDEntity, Sprite> _spriteMap;
+
+        public RefillStepVisualConverter(IReadOnlyDictionary<TileTypeIDEntity, Sprite> spriteMap)
+        {
+            _spriteMap = spriteMap;
+        }
+        
         public bool CanConvert(GameStepEntity step)
         {
             return step is RefillStepEntity;
         }
 
-        public VisualStep Convert(GameStepEntity step, IReadOnlyDictionary<TileTypeIDEntity, Sprite> spriteMap)
+        public VisualStep Convert(GameStepEntity step)
         {
             var refillStep = (RefillStepEntity)step;
             var visualStep = new VisualStep();
 
             foreach (var newTileData in refillStep.Items)
             {
-                spriteMap.TryGetValue(newTileData.Tile.Type, out var sprite);
+                _spriteMap.TryGetValue(newTileData.Tile.Type, out var sprite);
 
                 visualStep.Actions.Add(new SpawnVisualAction
                 {

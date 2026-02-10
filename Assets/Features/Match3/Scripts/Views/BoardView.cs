@@ -86,32 +86,33 @@ namespace Features.Match3.Scripts.Views
 
                 foreach (var action in step.Actions)
                 {
-                    if (action is DestroyVisualAction destroy)
+                    switch (action)
                     {
-                        var t = GetTileAt(destroy.X, destroy.Y); // Or by UniqueID if provided
-                        if (t)
-                        {
-                            _activeTiles.Remove(t.UniqueId);
-                            // Unsubscribe before destroying to be safe, though Destroy clears generic invokes, C# events persist if not cleared but the object is dead. 
-                            // Strong ref is Tile -> Board (Deletage). Board -> Tile (Ref). Tile is dead. GC handles it.
-                            t.OnClicked -= OnTileClickedHandler;
-                            tasks.Add(AnimateDestroy(t));
-                        }
-                    }
-                    else if (action is MoveVisualAction move)
-                    {
-                        if (_activeTiles.TryGetValue(move.Tile.UniqueId, out var tile))
-                        {
-                            // Move
-                            tasks.Add(AnimateMove(tile, move.ToX, move.ToY));
-                        }
-                    }
-                    else if (action is SpawnVisualAction spawn)
-                    {
-                        // Spawn above
-                        var t = SpawnTile(spawn.Tile, spawn.X, spawn.Y + 2); // Start higher
-                        tasks.Add(AnimateMove(t, spawn.X, spawn.Y));
-                        // Or simple spawn
+                        case DestroyVisualAction destroy:
+                            {
+                                var t = GetTileAt(destroy.X, destroy.Y);
+                                if (t)
+                                {
+                                    _activeTiles.Remove(t.UniqueId);
+                                    t.OnClicked -= OnTileClickedHandler;
+                                    tasks.Add(AnimateDestroy(t));
+                                }
+                                break;
+                            }
+                        case MoveVisualAction move:
+                            {
+                                if (_activeTiles.TryGetValue(move.Tile.UniqueId, out var tile))
+                                {
+                                    tasks.Add(AnimateMove(tile, move.ToX, move.ToY));
+                                }
+                                break;
+                            }
+                        case SpawnVisualAction spawn:
+                            {
+                                var t = SpawnTile(spawn.Tile, spawn.X, spawn.Y + 2);
+                                tasks.Add(AnimateMove(t, spawn.X, spawn.Y));
+                                break;
+                            }
                     }
                 }
 

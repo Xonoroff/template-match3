@@ -8,7 +8,7 @@ namespace Features.Match3.Scripts.Domain
         {
             var matches = new List<MatchPatternEntity>();
 
-            var state = grid; // In this architecture grid is stateless snapshot
+            var state = grid.Clone();
             var startTile = state.GetTile(startX, startY);
 
             if (startTile.IsEmpty)

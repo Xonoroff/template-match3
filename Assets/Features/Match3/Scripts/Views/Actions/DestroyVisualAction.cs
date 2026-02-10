@@ -1,6 +1,6 @@
 ﻿namespace Features.Match3.Scripts.Views
 {
-    public class DestroyVisualAction : VisualAction
+    public struct DestroyVisualAction : IVisualAction
     {
         public int X, Y;
     }

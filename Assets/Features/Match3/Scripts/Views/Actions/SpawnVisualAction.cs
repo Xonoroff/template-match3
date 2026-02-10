@@ -2,7 +2,7 @@
 
 namespace Features.Match3.Scripts.Views
 {
-    public class SpawnVisualAction : VisualAction
+    public struct SpawnVisualAction : IVisualAction
     {
         public int X, Y;
         public TileViewEntity Tile;

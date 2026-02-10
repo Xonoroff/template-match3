@@ -9,11 +9,9 @@ namespace Features.Match3.Scripts.Domain
             var newGrid = grid.Clone();
             var drops = new List<TilePlacementEntity>();
 
-            // For each column
             for (int x = 0; x < newGrid.Width; x++)
             {
                 int emptyCount = 0;
-                // Scan from bottom to top
                 for (int y = 0; y < newGrid.Height; y++)
                 {
                     if (newGrid.GetTile(x, y).IsEmpty)
@@ -22,14 +20,12 @@ namespace Features.Match3.Scripts.Domain
                     }
                     else if (emptyCount > 0)
                     {
-                        // Stick tile down
                         var tile = newGrid.GetTile(x, y);
                         int targetY = y - emptyCount;
 
                         newGrid.SetTile(x, targetY, tile);
                         newGrid.SetTile(x, y, TileEntity.Empty);
 
-                        // Record drop
                         drops.Add(new TilePlacementEntity
                         {
                             Tile = tile,

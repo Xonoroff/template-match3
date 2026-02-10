@@ -12,7 +12,7 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
             return step is GravityStepEntity;
         }
 
-        public VisualStep Convert(GameStepEntity step, IReadOnlyDictionary<TileTypeIDEntity, Sprite> spriteMap)
+        public VisualStep Convert(GameStepEntity step)
         {
             var gravityStep = (GravityStepEntity)step;
             var visualStep = new VisualStep();
@@ -22,8 +22,6 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
                 int toX = drop.Coordinates.X;
                 int toY = drop.Coordinates.Y;
 
-                spriteMap.TryGetValue(drop.Tile.Type, out var sprite);
-
                 visualStep.Actions.Add(new MoveVisualAction
                 {
                     ToX = toX,
@@ -31,8 +29,7 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
                     Tile = new TileViewEntity
                     {
                         UniqueId = drop.Tile.UniqueId,
-                        TypeId = drop.Tile.Type,
-                        Sprite = sprite
+                        TypeId = drop.Tile.Type
                     }
                 });
             }

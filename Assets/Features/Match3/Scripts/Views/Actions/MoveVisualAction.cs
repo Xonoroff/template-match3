@@ -2,7 +2,7 @@
 
 namespace Features.Match3.Scripts.Views
 {
-    public class MoveVisualAction : VisualAction
+    public struct MoveVisualAction : IVisualAction
     {
         public int ToX, ToY;
         public TileViewEntity Tile;
