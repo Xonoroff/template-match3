@@ -1,0 +1,20 @@
+name: Unity Compile Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: game-ci/unity-builder@v4
+        with:
+          unityVersion: 6000.0.0f1
+          targetPlatform: Android
+
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
