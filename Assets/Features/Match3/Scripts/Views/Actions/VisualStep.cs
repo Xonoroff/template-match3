@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Features.Match3.Scripts.Views
+namespace Features.Match3.Scripts.Views.Actions
 {
     public class VisualStep
     {

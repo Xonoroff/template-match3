@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities.Configs;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.U2D;
 
-namespace Features.Match3.Scripts.Services
+namespace Features.Match3.Scripts.Loaders
 {
     public class Match3ContentLoader : MonoBehaviour, IMatch3ContentLoader
     {

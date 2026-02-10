@@ -1,8 +1,7 @@
-using System;
 using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Services;
 
-namespace Features.Match3.Scripts.Services
+namespace Features.Match3.Scripts.Commands
 {
     public class ActivateTileHandler : ICommandHandler<ActivateTileCommand>
     {

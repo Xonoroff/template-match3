@@ -1,5 +1,6 @@
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities.Steps;
 using Features.Match3.Scripts.Views;
+using Features.Match3.Scripts.Views.Actions;
 
 namespace Features.Match3.Scripts.Presenters.StepConverters
 {

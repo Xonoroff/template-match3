@@ -1,36 +1,38 @@
 using System.Collections.Generic;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Entities.States;
+using Features.Match3.Scripts.Entities.Steps;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Services
 {
     public class StandardGridService : IGridService
     {
 
-        public (GridEntity, RefillStepEntity) Refill(GridEntity grid, int seed, IList<TileTypeIDEntity> availableTypes)
+        public (GridStateEntity, RefillStepEntity) Refill(GridStateEntity gridState, int seed, IList<TileTypeIDEntity> availableTypes)
         {
-            var newGrid = grid.Clone();
             var rand = new System.Random(seed);
-            var newTiles = new List<TilePlacementEntity>();
+            var newTiles = new List<TileEntity>();
 
-            for (int y = 0; y < newGrid.Height; y++)
+            for (int y = 0; y < gridState.Height; y++)
             {
-                for (int x = 0; x < newGrid.Width; x++)
+                for (int x = 0; x < gridState.Width; x++)
                 {
-                    if (newGrid.GetTile(x, y).IsEmpty)
+                    if (gridState.GetTile(x, y).IsEmpty)
                     {
                         var type = availableTypes[rand.Next(availableTypes.Count)];
                         var id = rand.Next(10000, 999999);
 
-                        var newTile = new TileEntity(type, new TileCoordinateEntity(x, y)) { UniqueId = id };
-                        newGrid.SetTile(x, y, newTile);
-                        newTiles.Add(new TilePlacementEntity
-                        {
-                            Tile = newTile
-                        });
+                        var newCoordinate = new TileCoordinateEntity(x, y);
+                        var newTile = new TileEntity(id, type, newCoordinate);
+                        
+                        gridState.SetTile(x, y, newTile);
+                        
+                        newTiles.Add(newTile);
                     }
                 }
             }
 
-            return (newGrid, new RefillStepEntity { ResultingGrid = newGrid, Items = newTiles });
+            return (gridState, new RefillStepEntity(gridState, newTiles));
         }
     }
 }

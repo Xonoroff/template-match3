@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Entities.States;
+using Features.Match3.Scripts.Entities.Steps;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Services
 {
     public interface IGridService
     {
-        (GridEntity, RefillStepEntity) Refill(GridEntity grid, int seed, IList<TileTypeIDEntity> availableTypes);
+        (GridStateEntity, RefillStepEntity) Refill(GridStateEntity gridState, int seed, IList<TileTypeIDEntity> availableTypes);
     }
 }

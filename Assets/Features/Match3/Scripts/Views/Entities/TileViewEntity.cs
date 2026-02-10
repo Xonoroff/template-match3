@@ -1,7 +1,7 @@
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities.Configs;
 using UnityEngine;
 
-namespace Features.Match3.Scripts.Views
+namespace Features.Match3.Scripts.Views.Entities
 {
     public struct TileViewEntity
     {

@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
+using Features.Match3.Scripts.Entities.States;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Entities.Steps
 {
-    public class MatchStepEntity : GameStepEntity
+    public record MatchStepEntity : GameStepEntity
     {
-        public List<MatchPatternEntity> Matches;
+        public List<MatchPatternEntity> Matches { get; private set; }
+        
+        public MatchStepEntity(GridStateEntity resultingGridState, List<MatchPatternEntity> matches) : base(resultingGridState)
+        {
+            Matches = matches;
+        }
     }
 }

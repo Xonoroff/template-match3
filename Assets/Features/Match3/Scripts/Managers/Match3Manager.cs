@@ -1,14 +1,17 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
-using Features.Match3.Scripts.Services;
+using Features.Match3.Scripts.API;
+using Features.Match3.Scripts.Commands;
+using Features.Match3.Scripts.Entities;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Entities.States;
 using UnityEngine;
 
 namespace Features.Match3.Scripts.Managers
 {
     public class Match3Manager : IMatch3Manager
     {
-        private GridEntity _cachedProvisionalState;
+        private GridStateEntity _cachedProvisionalState;
         private LevelConfigEntity _cachedConfig;
 
         private readonly ActivateTileHandler _activateTileHandler;
@@ -22,7 +25,7 @@ namespace Features.Match3.Scripts.Managers
             _api = api;
         }
 
-        public async UniTask<(LevelConfigEntity config, GridEntity state)> StartLevel(int levelId)
+        public async UniTask<(LevelConfigEntity config, GridStateEntity state)> StartLevel(int levelId)
         {
             var (config, state) = await _api.StartLevel(levelId);
             _cachedConfig = config;
@@ -30,7 +33,7 @@ namespace Features.Match3.Scripts.Managers
             return (_cachedConfig, _cachedProvisionalState);
         }
 
-        public event Action<GridEntity> OnGameStateUpdated;
+        public event Action<GridStateEntity> OnGameStateUpdated;
 
         public async UniTask<ResolveSequenceEntity> HandleTap(int x, int y)
         {
@@ -44,7 +47,7 @@ namespace Features.Match3.Scripts.Managers
 
             var localResult = await _activateTileHandler.Handle(command);
 
-            SyncGameStateAsync(x, y).Forget();
+            //SyncGameStateAsync(x, y).Forget();
 
             return localResult.ResolvedSequence;
         }

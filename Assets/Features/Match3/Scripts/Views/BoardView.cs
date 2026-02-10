@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Views.Actions;
+using Features.Match3.Scripts.Views.Entities;
 using UnityEngine;
 
 namespace Features.Match3.Scripts.Views

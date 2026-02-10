@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 
-namespace Features.Match3.Scripts.Services
+namespace Features.Match3.Scripts.Commands
 {
     public interface ICommandHandler<T> where T : ICommand
     {

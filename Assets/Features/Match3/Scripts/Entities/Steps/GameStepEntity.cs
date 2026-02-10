@@ -1,7 +1,14 @@
-﻿namespace Features.Match3.Scripts.Domain
+﻿using Features.Match3.Scripts.Entities.States;
+
+namespace Features.Match3.Scripts.Entities.Steps
 {
-    public abstract class GameStepEntity
+    public abstract record GameStepEntity
     {
-        public GridEntity ResultingGrid;
+        public GridStateEntity ResultingGridState { get; private set; }
+
+        protected GameStepEntity(GridStateEntity resultingGridState)
+        {
+            ResultingGridState = resultingGridState;
+        }
     }
 }

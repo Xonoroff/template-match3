@@ -1,4 +1,4 @@
-namespace Features.Match3.Scripts.Views
+namespace Features.Match3.Scripts.Views.Actions
 {
     public interface IVisualAction
     {

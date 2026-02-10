@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Entities.Steps;
 using UnityEngine;
 
 namespace Features.Match3.Scripts.Presenters.StepConverters

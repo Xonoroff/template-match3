@@ -1,6 +1,4 @@
-﻿using Features.Match3.Scripts.Domain;
-
-namespace Features.Match3.Scripts.Views
+﻿namespace Features.Match3.Scripts.Views.Entities
 {
     public struct BoardViewEntity
     {

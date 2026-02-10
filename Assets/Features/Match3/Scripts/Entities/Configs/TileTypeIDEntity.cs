@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Entities.Configs
 {
     [Serializable]
     public readonly struct TileTypeIDEntity : IEquatable<TileTypeIDEntity>

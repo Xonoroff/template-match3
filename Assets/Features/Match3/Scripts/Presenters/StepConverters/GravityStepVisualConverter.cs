@@ -1,6 +1,8 @@
 using System.Collections.Generic;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities.Steps;
 using Features.Match3.Scripts.Views;
+using Features.Match3.Scripts.Views.Actions;
+using Features.Match3.Scripts.Views.Entities;
 using UnityEngine;
 
 namespace Features.Match3.Scripts.Presenters.StepConverters
@@ -19,8 +21,8 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
 
             foreach (var drop in gravityStep.Items)
             {
-                int toX = drop.Tile.Coordinate.X;
-                int toY = drop.Tile.Coordinate.Y;
+                int toX = drop.Coordinate.X;
+                int toY = drop.Coordinate.Y;
 
                 visualStep.Actions.Add(new MoveVisualAction
                 {
@@ -28,9 +30,9 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
                     ToY = toY,
                     Tile = new TileViewEntity
                     {
-                        UniqueId = drop.Tile.UniqueId,
-                        TypeId = drop.Tile.Type,
-                        Coordinate = drop.Tile.Coordinate
+                        UniqueId = drop.UniqueId,
+                        TypeId = drop.Type,
+                        Coordinate = drop.Coordinate
                     }
                 });
             }

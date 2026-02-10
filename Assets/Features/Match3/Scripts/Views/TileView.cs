@@ -1,5 +1,5 @@
-using System; // For Action
-using Features.Match3.Scripts.Domain;
+using System;
+using Features.Match3.Scripts.Views.Entities; // For Action
 using UnityEngine;
 using UnityEngine.EventSystems;
 

@@ -1,4 +1,4 @@
-namespace Features.Match3.Scripts.Services
+namespace Features.Match3.Scripts.Commands
 {
     public interface ICommand
     {

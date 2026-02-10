@@ -1,6 +1,9 @@
 using System.Collections.Generic;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Entities.Steps;
 using Features.Match3.Scripts.Views;
+using Features.Match3.Scripts.Views.Actions;
+using Features.Match3.Scripts.Views.Entities;
 using UnityEngine;
 
 namespace Features.Match3.Scripts.Presenters.StepConverters
@@ -26,18 +29,18 @@ namespace Features.Match3.Scripts.Presenters.StepConverters
 
             foreach (var newTileData in refillStep.Items)
             {
-                _spriteMap.TryGetValue(newTileData.Tile.Type, out var sprite);
+                _spriteMap.TryGetValue(newTileData.Type, out var sprite);
 
                 visualStep.Actions.Add(new SpawnVisualAction
                 {
-                    X = newTileData.Tile.Coordinate.X,
-                    Y = newTileData.Tile.Coordinate.Y,
+                    X = newTileData.Coordinate.X,
+                    Y = newTileData.Coordinate.Y,
                     Tile = new TileViewEntity
                     {
-                        UniqueId = newTileData.Tile.UniqueId,
-                        TypeId = newTileData.Tile.Type,
+                        UniqueId = newTileData.UniqueId,
+                        TypeId = newTileData.Type,
                         Sprite = sprite,
-                        Coordinate = newTileData.Tile.Coordinate
+                        Coordinate = newTileData.Coordinate
                     }
                 });
             }

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Features.Match3.Scripts.Entities;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Entities.States;
+using Features.Match3.Scripts.Entities.Steps;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Services
 {
     public class StandardMatch3Evaluator : IMatch3Evaluator
     {
@@ -16,44 +20,43 @@ namespace Features.Match3.Scripts.Domain
             _gravityService = gravity;
         }
 
-        public ResolveSequenceEntity ResolveTap(GridEntity startState, int x, int y, LevelConfigEntity config)
+        public ResolveSequenceEntity ResolveTap(GridStateEntity gridState, int x, int y, LevelConfigEntity config)
         {
             var sequence = new ResolveSequenceEntity();
-            var clonedGrid = startState.Clone();
 
-            var matches = _matchService.GetConnectedTiles(clonedGrid, x, y);
+            var matches = _matchService.GetConnectedTiles(gridState, x, y);
 
             if (matches.Count > 0)
             {
                 int currentSeed = config.Seed + Environment.TickCount;
 
-                sequence.Steps.Add(new MatchStepEntity { ResultingGrid = clonedGrid, Matches = matches });
-                RemoveTiles(clonedGrid, matches);
+                sequence.Steps.Add(new MatchStepEntity(gridState, matches));
+                RemoveTiles(gridState, matches);
 
-                ApplyGravityAndRefill(clonedGrid, sequence, ref currentSeed, config);
+                ApplyGravityAndRefill(gridState, sequence, ref currentSeed, config);
             }
 
             return sequence;
         }
 
-        private void RemoveTiles(GridEntity grid, List<MatchPatternEntity> matches)
+        private void RemoveTiles(GridStateEntity gridState, List<MatchPatternEntity> matches)
         {
             foreach (var match in matches)
             {
                 foreach (var coord in match.TileCoordinates)
                 {
-                    grid.SetTile(coord.X, coord.Y, TileEntity.Empty(coord));
+                    gridState.SetTile(coord.X, coord.Y, TileEntity.Empty(coord));
                 }
             }
         }
 
-        private void ApplyGravityAndRefill(GridEntity grid, ResolveSequenceEntity sequence, ref int seed, LevelConfigEntity config)
+        private void ApplyGravityAndRefill(GridStateEntity gridState, ResolveSequenceEntity sequence, ref int seed, LevelConfigEntity config)
         {
-            var (gridAfterGravity, gravityStep) = _gravityService.ApplyGravity(grid);
+            var (gridAfterGravity, gravityStep) = _gravityService.ApplyGravity(gridState);
 
             sequence.Steps.Add(gravityStep);
 
-            var (gridAfterRefill, refillStep) = _gridService.Refill(gridAfterGravity, seed++, config.AvailableColors);
+            var (gridAfterRefill, refillStep) = _gridService.Refill(gridAfterGravity, seed++, config.AvailableTileTypes);
             sequence.Steps.Add(refillStep);
         }
     }

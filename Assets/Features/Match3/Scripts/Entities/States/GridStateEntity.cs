@@ -1,16 +1,19 @@
 ﻿using System;
+using Features.Match3.Scripts.Entities.Configs;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Entities.States
 {
     [Serializable]
-    public struct GridEntity
+    public class GridStateEntity
     {
-        public int Width;
-        public int Height;
-        public TileEntity[] Tiles; //TODO: breaks immutability
+        public readonly int ConfigId;
+        public readonly int Width;
+        public readonly int Height;
+        public readonly TileEntity[] Tiles;
 
-        public GridEntity(int width, int height)
+        public GridStateEntity(int id, int width, int height)
         {
+            ConfigId = id;
             Width = width;
             Height = height;
             Tiles = new TileEntity[width * height];
@@ -33,16 +36,9 @@ namespace Features.Match3.Scripts.Domain
         {
             if (x < 0 || x >= Width || y < 0 || y >= Height) return;
 
-            var placedTile = tile;
-            placedTile.Coordinate = new TileCoordinateEntity(x, y);
-            Tiles[y * Width + x] = placedTile;
-        }
-
-        public GridEntity Clone()
-        {
-            var newGrid = new GridEntity(Width, Height);
-            Array.Copy(Tiles, newGrid.Tiles, Tiles.Length);
-            return newGrid;
+            var coordinate = new TileCoordinateEntity(x, y);
+            var newTile = new TileEntity(tile.UniqueId, tile.Type, coordinate);
+            Tiles[y * Width + x] = newTile;
         }
     }
 }

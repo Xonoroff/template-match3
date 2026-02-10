@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Loaders;
 using Features.Match3.Scripts.Managers;
 using Features.Match3.Scripts.Presenters.StepConverters;
-using Features.Match3.Scripts.Services;
 using Features.Match3.Scripts.Views;
+using Features.Match3.Scripts.Views.Actions;
+using Features.Match3.Scripts.Views.Entities;
 using UnityEngine;
 
 namespace Features.Match3.Scripts.Presenters
@@ -46,7 +49,7 @@ namespace Features.Match3.Scripts.Presenters
 
             _tileSpriteMap = new Dictionary<TileTypeIDEntity, Sprite>();
 
-            var uniqueTypes = new HashSet<TileTypeIDEntity>(config.AvailableColors);
+            var uniqueTypes = new HashSet<TileTypeIDEntity>(config.AvailableTileTypes);
             var typesList = new List<TileTypeIDEntity>(uniqueTypes);
             var loadTasks = new List<UniTask<Sprite>>(typesList.Count);
 

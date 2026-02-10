@@ -1,6 +1,6 @@
-﻿using Features.Match3.Scripts.Domain;
+﻿using Features.Match3.Scripts.Views.Entities;
 
-namespace Features.Match3.Scripts.Views
+namespace Features.Match3.Scripts.Views.Actions
 {
     public struct MoveVisualAction : IVisualAction
     {

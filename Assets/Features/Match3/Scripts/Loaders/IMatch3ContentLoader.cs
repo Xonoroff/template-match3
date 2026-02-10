@@ -1,9 +1,9 @@
 using System;
 using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.Entities.Configs;
 using UnityEngine;
 
-namespace Features.Match3.Scripts.Services
+namespace Features.Match3.Scripts.Loaders
 {
     public interface IMatch3ContentLoader : IDisposable
     {

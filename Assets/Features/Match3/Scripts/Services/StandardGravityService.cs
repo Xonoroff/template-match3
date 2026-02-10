@@ -1,45 +1,43 @@
 ﻿using System.Collections.Generic;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Entities.States;
+using Features.Match3.Scripts.Entities.Steps;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Services
 {
     public class StandardGravityService : IGravityService
     {
-        public (GridEntity, GravityStepEntity) ApplyGravity(GridEntity grid)
+        public (GridStateEntity, GravityStepEntity) ApplyGravity(GridStateEntity gridState)
         {
-            var newGrid = grid.Clone();
-            var drops = new List<TilePlacementEntity>();
+            var drops = new List<TileEntity>();
 
-            for (int x = 0; x < newGrid.Width; x++)
+            for (int x = 0; x < gridState.Width; x++)
             {
                 int emptyCount = 0;
-                for (int y = 0; y < newGrid.Height; y++)
+                for (int y = 0; y < gridState.Height; y++)
                 {
-                    if (newGrid.GetTile(x, y).IsEmpty)
+                    if (gridState.GetTile(x, y).IsEmpty)
                     {
                         emptyCount++;
                     }
                     else if (emptyCount > 0)
                     {
-                        var tile = newGrid.GetTile(x, y);
+                        var tile = gridState.GetTile(x, y);
                         int targetY = y - emptyCount;
 
-                        // Ensure the tile we move knows its new coordinate
-                        var movedTile = tile;
-                        movedTile.Coordinate = new TileCoordinateEntity(x, targetY);
+                        var newCoordinate = new TileCoordinateEntity(x, targetY);
+                        var movedTile = tile.CloneWith(newCoordinate);
 
-                        newGrid.SetTile(x, targetY, movedTile);
-                        newGrid.SetTile(x, y, TileEntity.Empty(new TileCoordinateEntity(x, y)));
+                        gridState.SetTile(x, targetY, movedTile);
+                        gridState.SetTile(x, y, TileEntity.Empty(new TileCoordinateEntity(x, y)));
 
-                        drops.Add(new TilePlacementEntity
-                        {
-                            Tile = movedTile
-                        });
+                        drops.Add(movedTile);
                     }
                 }
             }
 
-            var step = new GravityStepEntity { ResultingGrid = newGrid, Items = drops };
-            return (newGrid, step);
+            var step = new GravityStepEntity(gridState, drops);
+            return (gridState, step);
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace Features.Match3.Scripts.Domain
+﻿using Features.Match3.Scripts.Entities.States;
+using Features.Match3.Scripts.Entities.Steps;
+
+namespace Features.Match3.Scripts.Services
 {
     public interface IGravityService
     {
-        (GridEntity, GravityStepEntity) ApplyGravity(GridEntity grid);
+        (GridStateEntity, GravityStepEntity) ApplyGravity(GridStateEntity gridState);
     }
 }

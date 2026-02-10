@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
+using Features.Match3.Scripts.Entities.Configs;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Entities
 {
-    public struct MatchPatternEntity
+    public record MatchPatternEntity
     {
-        public List<TileCoordinateEntity> TileCoordinates;
+        public readonly IReadOnlyList<TileCoordinateEntity> TileCoordinates;
+
+        public MatchPatternEntity(IReadOnlyList<TileCoordinateEntity> tileCoordinates)
+        {
+            TileCoordinates = tileCoordinates;
+        }
     }
 }

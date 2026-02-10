@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Features.Match3.Scripts.Domain;
+using Features.Match3.Scripts.API;
+using Features.Match3.Scripts.Commands;
+using Features.Match3.Scripts.Entities.Configs;
+using Features.Match3.Scripts.Loaders;
 using Features.Match3.Scripts.Managers;
 using Features.Match3.Scripts.Presenters;
 using Features.Match3.Scripts.Services;
@@ -40,14 +43,15 @@ namespace Features.Match3.Scripts
             _manager = new Match3Manager(handler, match3API);
             _presenter = new BoardPresenter(_manager, _view, _contentLoader, Debug.unityLogger);
 
-            var mockConfig = new LevelConfigEntity()
-            {
-                AvailableColors = types.ToArray(),
-                Width = _width,
-                Height = _height,
-                AtlasAddress = "tiles_default",
-                SpritePrefix = "tile_"
-            };
+            var mockConfig = new LevelConfigEntity(
+                _width,
+                _height,
+                types.ToArray(),
+                _seed,
+                "tiles_default",
+                "tile_"
+            );
+            
             match3API.MockConfig(mockConfig, _seed);
 
             InitializeGame().Forget();

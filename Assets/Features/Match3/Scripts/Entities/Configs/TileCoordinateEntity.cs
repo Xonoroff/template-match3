@@ -1,12 +1,12 @@
 using System;
 
-namespace Features.Match3.Scripts.Domain
+namespace Features.Match3.Scripts.Entities.Configs
 {
     [Serializable]
     public struct TileCoordinateEntity : IEquatable<TileCoordinateEntity>
     {
-        public int X;
-        public int Y;
+        public readonly int X;
+        public readonly int Y;
 
         public TileCoordinateEntity(int x, int y)
         {
