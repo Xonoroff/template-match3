@@ -5,9 +5,8 @@ using Features.Match3.Scripts.Entities.States;
 namespace Features.Match3.Scripts.Commands
 {
     [Serializable]
-    public struct ActivateTileCommand : ICommand
+    public record ActivateTileCommand : ICommand
     {
-        
         public GridStateEntity CurrentState { get; private set; }
         
         public LevelConfigEntity Config { get; private set; }

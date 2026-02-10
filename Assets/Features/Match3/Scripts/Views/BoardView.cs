@@ -39,10 +39,7 @@ namespace Features.Match3.Scripts.Views
                 var tileData = context.Tiles[i];
                 if (tileData.IsEmpty) continue;
 
-                int x = i % context.Width;
-                int y = i / context.Width;
-
-                SpawnTile(tileData, x, y);
+                SpawnTile(tileData, tileData.Coordinate.X, tileData.Coordinate.Y);
             }
         }
         
@@ -109,9 +106,9 @@ namespace Features.Match3.Scripts.Views
                                 break;
                             }
                         case SpawnVisualAction spawn:
-                            {
-                                var t = SpawnTile(spawn.Tile, spawn.X, spawn.Y + 2);
-                                tasks.Add(AnimateMove(t, spawn.X, spawn.Y));
+                        {
+                            var t = SpawnTile(spawn.Tile, spawn.FromX, spawn.FromY);
+                                tasks.Add(AnimateMove(t, spawn.Tile.Coordinate.X, spawn.Tile.Coordinate.Y));
                                 break;
                             }
                     }

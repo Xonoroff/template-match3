@@ -3,7 +3,7 @@ using Features.Match3.Scripts.Services;
 
 namespace Features.Match3.Scripts.Commands
 {
-    public class ActivateTileHandler : ICommandHandler<ActivateTileCommand>
+    public record ActivateTileHandler : ICommandHandler<ActivateTileCommand>
     {
         private readonly IMatch3Evaluator _evaluator;
 
